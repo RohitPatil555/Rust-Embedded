@@ -1,0 +1,13 @@
+[package]
+name = "ex04"
+version = "0.1.0"
+authors = ["ABC <abc@fool.com>"]
+
+[dependencies]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
