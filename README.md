@@ -7,4 +7,6 @@ In this we will look at basic technique that can get use by rust while developin
 * Example 3 - This is focus on calling Rust APIs from C language.
 * Example 4 - This focus on handling custom memory management for embedded.
 * Example 5 - This focus on understanding about future.
+* Example 6 - In this, we will see management of structure instances in embedded as static allocation.
+* Example 7 - This focus on getting basic understanding about macro_rules.
 
