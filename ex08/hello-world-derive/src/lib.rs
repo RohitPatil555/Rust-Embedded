@@ -5,24 +5,25 @@ extern crate quote;
 
 use proc_macro::TokenStream;
 
-fn impl_hello_world(ast: &syn::DeriveInput) -> quote::Tokens {
+fn impl_hello_world(ast: &syn::DeriveInput) -> TokenStream {
     let name = &ast.ident;
 
-    quote! {
+    let expanded = quote! {
         impl HelloWorld for #name {
             fn hello_world() {
                 println!("Hello, World! My name is {}", stringify!(#name));
             }
         }
-    }
+    };
+
+    TokenStream::from(expanded)
 }
 
 #[proc_macro_derive(HelloWorld)]
 pub fn hello_world(input: TokenStream) -> TokenStream {
-    let s = input.to_string();
-    let ast = syn::parse_derive_input(&s).unwrap();
+    let ast = syn::parse(input).unwrap();
 
     let gen = impl_hello_world(&ast);
 
-    gen.parse().unwrap()
+    gen
 }
