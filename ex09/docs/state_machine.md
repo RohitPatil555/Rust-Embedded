@@ -7,7 +7,7 @@ In this tutorial, we are exploring DSL using rust procedure macro.
 
 Let consider below Language procedure for our DSL.
 
-```
+```ignore
 state_mac!{
 
     sm_name = <state machine name>
@@ -44,7 +44,7 @@ state_mac!{
 
 Above code generate below structure.
 
-```
+```ignore
 pub struct <event_name>_io {
     pub #<event_name context>
 }
