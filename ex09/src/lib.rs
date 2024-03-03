@@ -14,7 +14,9 @@ mod custom_token;
 pub fn state_mac(input_stream: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input_stream as StateMachine);
     let name = input.name;
+    let c_fields = input.context_fields;
 
-    let output = quote!( println!("State Machine name {} ", #name ); );
+    let output = quote!();
+
     TokenStream::from(output)
 }
