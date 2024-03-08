@@ -3,7 +3,7 @@
 extern crate proc_macro;
 use crate::custom_parse::StateMachine;
 use proc_macro::TokenStream;
-use quote::quote;
+use quote::{format_ident, quote};
 use syn::parse_macro_input;
 
 mod custom_parse;
@@ -13,10 +13,13 @@ mod custom_token;
 #[proc_macro]
 pub fn state_mac(input_stream: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input_stream as StateMachine);
-    let name = input.name;
-    let c_fields = input.context_fields;
+    let stname = format_ident!("{}", input.name);
+    let pun = input.context_fields;
+    let out = quote!(
+        struct #stname {
+            #pun
+        }
+    );
 
-    let output = quote!();
-
-    TokenStream::from(output)
+    TokenStream::from(out)
 }

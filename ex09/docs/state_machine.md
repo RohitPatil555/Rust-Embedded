@@ -75,4 +75,14 @@ impl <sm_name> {
 
 ```
 
+## Code Observation
+
+Please execute below command to view generated code by macro.
+
+```ignore
+cargo expand --test macro_parse
+```
+
+
+
 
