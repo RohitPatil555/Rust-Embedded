@@ -3,8 +3,15 @@ extern crate ex09;
 use ex09::state_mac;
 
 state_mac!(
-    sm_name = "WellPump"
+    sm_name = "Smac"
     context {
-        bPumpStarted: bool,
+        s: bool,
+    }
+
+    event "testE1" {
+        j: u8,
+    }
+
+    event "testE2" {
     }
 );
