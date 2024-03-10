@@ -7,7 +7,7 @@ pub fn gen_event_struct(evt: &SmacEvent) -> Option<ItemStruct> {
     let name = format_ident!("Param{}", evt.name);
     let fields = &evt.evt_fields;
 
-    if fields.len() > 0 {
+    if !fields.is_empty() {
         let ost: ItemStruct = parse_quote!(
             struct #name {
                 #fields
@@ -27,7 +27,7 @@ pub fn gen_event_enum(evts: &Vec<SmacEvent>) -> Option<ItemEnum> {
     let ie: ItemEnum;
 
     for e in evts {
-        if e.evt_fields.len() > 0 {
+        if !e.evt_fields.is_empty() {
             name_list.push(format_ident!("{}", e.name));
             name_list_arg.push(format_ident!("Param{}", e.name));
         } else {
@@ -35,13 +35,15 @@ pub fn gen_event_enum(evts: &Vec<SmacEvent>) -> Option<ItemEnum> {
         }
     }
 
-    if name_list.len() == 0 {
+    if name_list.is_empty() && unit_name_list.is_empty() {
+        return None;
+    } else if name_list.is_empty() {
         ie = parse_quote!(
             enum SmacEvent {
                 #(#unit_name_list),*
             }
         );
-    } else if unit_name_list.len() == 0 {
+    } else if unit_name_list.is_empty() {
         ie = parse_quote!(
             enum SmacEvent {
                 #(#name_list(#name_list_arg)),*
@@ -71,8 +73,8 @@ mod tests {
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
-        let st = gen_event_struct(&smac.event_list[0]).unwrap();
-        println!("{:?}", st)
+        let st = gen_event_struct(&smac.event_list[0]);
+        assert_ne!(st, None, "Struct is not exepected to be None type");
     }
 
     #[test]
