@@ -14,4 +14,11 @@ state_mac!(
 
     event "testE2" {
     }
+
+    state "S0"
+    state "S1"
+    state "S2"
+    state "S3"
+
+    default "S0"
 );

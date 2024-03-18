@@ -61,11 +61,27 @@ pub fn gen_event_enum(evts: &Vec<SmacEvent>) -> Option<ItemEnum> {
     Some(ie)
 }
 
+pub fn get_state_enum(state_list: &Vec<String>) -> Option<ItemEnum> {
+    let mut state_idents: Vec<Ident> = vec![];
+
+    for st in state_list {
+        state_idents.push(format_ident!("{}", st));
+    }
+
+    let ie: ItemEnum = parse_quote!(
+        enum SmacState {
+            #(#state_idents),*
+        }
+    );
+
+    Some(ie)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::custom_parse::StateMachine;
 
-    use super::{gen_event_enum, gen_event_struct};
+    use super::{gen_event_enum, gen_event_struct, get_state_enum};
 
     #[test]
     fn event_test_1() {
@@ -135,5 +151,19 @@ mod tests {
 
         let out = gen_event_enum(&smac.event_list).unwrap();
         println!("{:?}", out);
+    }
+
+    #[test]
+    fn state_test_1() {
+        let input = "
+                state  \"S1\"
+                state  \"S2\"
+                state  \"S3\"
+                state  \"S4\"
+            ";
+
+        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+
+        let _ = get_state_enum(&smac.state_list);
     }
 }
