@@ -1,9 +1,10 @@
-use crate::custom_token::{context, default, event, sm_name, state};
+use crate::custom_token::{context, default, event, proc, sm_name, state};
+use std::collections::HashMap;
 use syn::{
     braced,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
-    Field, LitStr, Result, Token,
+    Field, LitStr, Result, Stmt, Token,
 };
 
 #[derive(Default)]
@@ -13,6 +14,13 @@ pub(crate) struct StateMachine {
     pub event_list: Vec<SmacEvent>,
     pub state_list: Vec<String>,
     pub state_default: String,
+    pub proc_list: HashMap<String, Vec<SmacEventProc>>,
+}
+
+#[derive(Default)]
+pub(crate) struct SmacEventProc {
+    pub event_name: String,
+    pub event_proc_list: Punctuated<Stmt, Token![;]>,
 }
 
 #[derive(Default)]
@@ -59,6 +67,21 @@ impl Parse for StateMachine {
             smac.state_default = state_name.value();
         }
 
+        while input.peek(proc) {
+            let _ = input.parse::<proc>()?;
+            let state_name: LitStr = input.parse()?;
+            let _: Token![:] = input.parse()?;
+            let proc_event: SmacEventProc = input.parse::<SmacEventProc>()?;
+
+            let entry = smac.proc_list.get_mut(&state_name.value());
+
+            if let Some(smac_event) = entry {
+                smac_event.push(proc_event);
+            } else {
+                smac.proc_list.insert(state_name.value(), vec![proc_event]);
+            }
+        }
+
         Ok(smac)
     }
 }
@@ -81,8 +104,23 @@ impl Parse for SmacEvent {
     }
 }
 
+impl Parse for SmacEventProc {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let mut event_proc: SmacEventProc = SmacEventProc::default();
+        let event_name: LitStr = input.parse()?;
+        let content;
+        let _ = braced!(content in input);
+
+        event_proc.event_name = event_name.value();
+        event_proc.event_proc_list = content.parse_terminated(Stmt::parse, Token![;])?;
+
+        Ok(event_proc)
+    }
+}
+
 #[cfg(test)]
 mod tests {
+
     use super::*;
 
     #[test]
@@ -182,5 +220,56 @@ mod tests {
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
         assert_eq!("TestStateDef", smac.state_default);
+    }
+
+    #[test]
+    fn parse_proc_1() {
+        let input = "proc \"S0\":\"e0\" {
+            let _ = 20;
+            }";
+
+        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+        assert_eq!(smac.proc_list.is_empty(), false);
+        for (sn, ps) in smac.proc_list {
+            assert_eq!(sn, "S0");
+            assert_eq!(ps.len(), 1);
+            assert_eq!(ps[0].event_name, "e0");
+        }
+    }
+
+    #[test]
+    fn parse_proc_2() {
+        let input = "proc \"S0\":\"e0\" { let _ = 20;}
+            proc \"S1\":\"e1\" { let _ = 21; }";
+
+        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+        assert_eq!(smac.proc_list.len(), 2);
+        for idx in 0..smac.proc_list.len() {
+            let mut name = format!("S{}", idx);
+            assert!(smac.proc_list.get(&name).is_some());
+
+            let evt_list = smac.proc_list.get(&name).unwrap();
+            for evt in evt_list {
+                name = format!("e{}", idx);
+                assert_eq!(name, evt.event_name);
+            }
+        }
+    }
+
+    #[test]
+    fn parse_proc_3() {
+        let input = "proc \"S0\":\"e0\" { let _ = 20; }
+        proc \"S0\":\"e1\" { let _ = 21; }";
+
+        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+        assert_eq!(smac.proc_list.len(), 1);
+        for idx in 0..smac.proc_list.len() {
+            let mut name = format!("S{}", idx);
+            let evt_list = smac.proc_list.get(&name).unwrap();
+            for e_idx in 0..evt_list.len() {
+                name = format!("e{}", e_idx);
+                assert_eq!(name, evt_list[e_idx].event_name);
+            }
+        }
     }
 }

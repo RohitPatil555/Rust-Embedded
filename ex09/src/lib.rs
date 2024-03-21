@@ -42,7 +42,7 @@ pub fn state_mac(input_stream: TokenStream) -> TokenStream {
     tk.extend(TokenStream::from(out));
 
     let st_default = format_ident!("{}", input.state_default);
-    out = quote!(static STATE: SmacState = #st_default;);
+    out = quote!(static STATE: SmacState = SmacState::#st_default;);
     tk.extend(TokenStream::from(out));
 
     tk

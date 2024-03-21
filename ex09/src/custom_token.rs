@@ -3,3 +3,4 @@ syn::custom_keyword!(context);
 syn::custom_keyword!(event);
 syn::custom_keyword!(state);
 syn::custom_keyword!(default);
+syn::custom_keyword!(proc);

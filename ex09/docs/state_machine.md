@@ -26,15 +26,8 @@ state_mac!{
     
     default <state_name>
     
-    proc <state_name> {
-        <event_name> => {
-            ...
-            next <= <state_name>
-            result <= {error,success}
-        }
-        all_events => {
-            ...
-        }
+    proc <state_name>:<event_name> {
+      ...
     }
 }
 
