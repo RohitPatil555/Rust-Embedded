@@ -1,31 +1,34 @@
 use crate::custom_token::{context, default, event, proc, sm_name, state};
-use std::collections::HashMap;
+use proc_macro2::Span;
 use syn::{
     braced,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
-    Field, LitStr, Result, Stmt, Token,
+    Field, Result, Stmt, Token, Ident, Error
 };
 
 #[derive(Default)]
 pub(crate) struct StateMachine {
-    pub name: String,
+    pub name: Option<Ident>,
     pub context_fields: Punctuated<Field, Token![,]>,
     pub event_list: Vec<SmacEvent>,
-    pub state_list: Vec<String>,
-    pub state_default: String,
-    pub proc_list: HashMap<String, Vec<SmacEventProc>>,
+    pub state_list: Vec<Ident>,
+    pub state_default: Option<Ident>,
+    pub proc_list: Vec<SmacEventProc>,
 }
 
 #[derive(Default)]
 pub(crate) struct SmacEventProc {
-    pub event_name: String,
+    pub state_name: Option<Ident>,
+    pub event_name: Option<Ident>,
     pub event_proc_list: Punctuated<Stmt, Token![;]>,
+    state_span: Option<Span>,
+    event_span: Option<Span>,
 }
 
-#[derive(Default)]
+#[derive(Default,PartialEq)]
 pub(crate) struct SmacEvent {
-    pub name: String,
+    pub name: Option<Ident>,
     pub evt_fields: Punctuated<Field, Token![,]>,
 }
 
@@ -36,9 +39,9 @@ impl Parse for StateMachine {
         if input.peek(sm_name) {
             let _ = input.parse::<sm_name>()?;
             let _: Token![=] = input.parse()?;
-            let sm_name_val: LitStr = input.parse()?;
+            let st_name : Ident = input.parse()?;
 
-            smac.name = sm_name_val.value();
+            smac.name = Some(st_name);
         }
 
         if input.peek(context) {
@@ -56,30 +59,39 @@ impl Parse for StateMachine {
 
         while input.peek(state) {
             let _ = input.parse::<state>()?;
-            let state_name: LitStr = input.parse()?;
-            smac.state_list.push(state_name.value());
+            let state_name: Ident = input.parse()?;
+            smac.state_list.push(state_name);
         }
 
         if input.peek(default) {
             let _ = input.parse::<default>()?;
-            let state_name: LitStr = input.parse()?;
+            let span = input.span();
+            let state_name: Ident = input.parse()?;
 
-            smac.state_default = state_name.value();
+            if smac.state_list.is_empty() {
+                return Err(Error::new(span, "States are not define before this lines."));
+            }
+
+            if smac.state_list.iter().find(|&state| state.to_string() == state_name.to_string()) == None {
+                return Err(Error::new(span, "State not defined"));
+            }
+
+            smac.state_default = Some(state_name);
         }
 
         while input.peek(proc) {
             let _ = input.parse::<proc>()?;
-            let state_name: LitStr = input.parse()?;
-            let _: Token![:] = input.parse()?;
             let proc_event: SmacEventProc = input.parse::<SmacEventProc>()?;
 
-            let entry = smac.proc_list.get_mut(&state_name.value());
-
-            if let Some(smac_event) = entry {
-                smac_event.push(proc_event);
-            } else {
-                smac.proc_list.insert(state_name.value(), vec![proc_event]);
+            if smac.state_list.iter().find(|&st| st.to_string() == proc_event.state_name.as_ref().unwrap().to_string()) == None {
+                return Err(Error::new(proc_event.state_span.unwrap(), "State not defined or wrong"));
             }
+
+            if smac.event_list.iter().find(|&evt| evt.name.as_ref().unwrap().to_string() == proc_event.event_name.as_ref().unwrap().to_string()) == None {
+                return Err(Error::new(proc_event.event_span.unwrap(), "Event not defined or wrong"));
+            }
+
+            smac.proc_list.push(proc_event);
         }
 
         Ok(smac)
@@ -92,11 +104,11 @@ impl Parse for SmacEvent {
 
         if input.peek(event) {
             let _ = input.parse::<event>()?;
-            let name: LitStr = input.parse()?;
+            let name: Ident = input.parse()?;
             let content;
             let _ = braced!(content in input);
 
-            evt.name = name.value();
+            evt.name = Some(name);
             evt.evt_fields = content.parse_terminated(Field::parse_named, Token![,])?;
         }
 
@@ -107,11 +119,20 @@ impl Parse for SmacEvent {
 impl Parse for SmacEventProc {
     fn parse(input: ParseStream) -> Result<Self> {
         let mut event_proc: SmacEventProc = SmacEventProc::default();
-        let event_name: LitStr = input.parse()?;
+
+        event_proc.state_span = Some(input.span());
+        let state_name: Ident = input.parse()?;
+
+        let _: Token![:] = input.parse()?;
+
+        event_proc.event_span = Some(input.span());
+        let event_name: Ident = input.parse()?;
+
         let content;
         let _ = braced!(content in input);
 
-        event_proc.event_name = event_name.value();
+        event_proc.state_name = Some(state_name);
+        event_proc.event_name = Some(event_name);
         event_proc.event_proc_list = content.parse_terminated(Stmt::parse, Token![;])?;
 
         Ok(event_proc)
@@ -125,9 +146,9 @@ mod tests {
 
     #[test]
     fn parse_sm_name() {
-        let input = "sm_name = \"testName\"";
+        let input = "sm_name = testName";
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
-        assert_eq!("testName", smac.name);
+        assert_eq!("testName", smac.name.unwrap().to_string().as_str());
     }
 
     #[test]
@@ -141,14 +162,14 @@ mod tests {
 
     #[test]
     fn parse_smac() {
-        let input = "sm_name = \"test\" 
+        let input = "sm_name = test 
         context {
             dd: u8,
         }";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
-        println!("State Machine Name : {} ", smac.name);
+        assert_eq!("test", smac.name.unwrap().to_string().as_str());
         for field in smac.context_fields {
             println!("{:?}", field);
         }
@@ -156,13 +177,12 @@ mod tests {
 
     #[test]
     fn parse_event_1() {
-        let input = "event \"TestEvent\" { dd: u8, }";
+        let input = "event TestEvent { dd: u8, }";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
         for evt in &smac.event_list {
-            println!("Event name : {}", evt.name);
-            assert_eq!("TestEvent", evt.name);
+            assert_eq!("TestEvent", evt.name.as_ref().unwrap().to_string().as_str());
         }
 
         assert_eq!(1, smac.event_list.len(), "Single Event not found");
@@ -170,15 +190,14 @@ mod tests {
 
     #[test]
     fn parse_event_2() {
-        let input = "event \"TestEvent1\" { dd: u8, } 
-                    event \"TestEvent2\" { tt: u8, }";
+        let input = "event TestEvent1 { dd: u8, } 
+                    event TestEvent2 { tt: u8, }";
         let mut idx: u8 = 1;
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
         for evt in &smac.event_list {
-            println!("Event name : {}", evt.name);
-            assert_eq!(format!("TestEvent{}", idx), evt.name);
+            assert_eq!(format!("TestEvent{}", idx), evt.name.as_ref().unwrap().to_string().as_str());
             idx += 1;
         }
 
@@ -187,12 +206,12 @@ mod tests {
 
     #[test]
     fn parse_state_1() {
-        let input = "state \"TestState1\"";
+        let input = "state TestState1";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
         for name in &smac.state_list {
-            assert_eq!("TestState1", name);
+            assert_eq!("TestState1", name.to_string().as_str());
         }
 
         assert_eq!(1, smac.state_list.len());
@@ -200,14 +219,14 @@ mod tests {
 
     #[test]
     fn parse_state_2() {
-        let input = "state \"TestState1\"
-                     state \"TestState2\"";
+        let input = "state TestState1
+                     state TestState2";
         let mut idx: u8 = 1;
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
         for name in &smac.state_list {
-            assert_eq!(format!("TestState{}", idx), *name);
+            assert_eq!(format!("TestState{}", idx), name.to_string().as_str());
             idx += 1;
         }
 
@@ -216,60 +235,31 @@ mod tests {
 
     #[test]
     fn parse_default() {
-        let input = "default \"TestStateDef\"";
+        let input = " state TestStateDef
+                    default TestStateDef";
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
-        assert_eq!("TestStateDef", smac.state_default);
+        assert_eq!("TestStateDef", smac.state_default.unwrap().to_string().as_str());
     }
 
     #[test]
     fn parse_proc_1() {
-        let input = "proc \"S0\":\"e0\" {
-            let _ = 20;
-            }";
+        let input = "
+            event e0 {}
+            state S0
+            default S0
+            proc S0 : e0 {
+                let _ = 20;
+            }
+            ";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
+
         assert_eq!(smac.proc_list.is_empty(), false);
-        for (sn, ps) in smac.proc_list {
-            assert_eq!(sn, "S0");
-            assert_eq!(ps.len(), 1);
-            assert_eq!(ps[0].event_name, "e0");
-        }
-    }
-
-    #[test]
-    fn parse_proc_2() {
-        let input = "proc \"S0\":\"e0\" { let _ = 20;}
-            proc \"S1\":\"e1\" { let _ = 21; }";
-
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
-        assert_eq!(smac.proc_list.len(), 2);
-        for idx in 0..smac.proc_list.len() {
-            let mut name = format!("S{}", idx);
-            assert!(smac.proc_list.get(&name).is_some());
-
-            let evt_list = smac.proc_list.get(&name).unwrap();
-            for evt in evt_list {
-                name = format!("e{}", idx);
-                assert_eq!(name, evt.event_name);
-            }
-        }
-    }
-
-    #[test]
-    fn parse_proc_3() {
-        let input = "proc \"S0\":\"e0\" { let _ = 20; }
-        proc \"S0\":\"e1\" { let _ = 21; }";
-
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
-        assert_eq!(smac.proc_list.len(), 1);
-        for idx in 0..smac.proc_list.len() {
-            let mut name = format!("S{}", idx);
-            let evt_list = smac.proc_list.get(&name).unwrap();
-            for e_idx in 0..evt_list.len() {
-                name = format!("e{}", e_idx);
-                assert_eq!(name, evt_list[e_idx].event_name);
-            }
+        for proc in smac.proc_list {
+            assert_eq!(proc.state_name.unwrap().to_string().as_str(), "S0");
+            assert_eq!(proc.event_name.unwrap().to_string().as_str(), "e0");
+            assert_eq!(proc.event_proc_list.len(), 1);
         }
     }
 }

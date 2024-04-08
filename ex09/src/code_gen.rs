@@ -4,7 +4,7 @@ use quote::format_ident;
 use syn::{parse_quote, ItemEnum, ItemStruct};
 
 pub fn gen_event_struct(evt: &SmacEvent) -> Option<ItemStruct> {
-    let name = format_ident!("Param{}", evt.name);
+    let name = format_ident!("Param{}", evt.name.as_ref().unwrap().to_string());
     let fields = &evt.evt_fields;
 
     if !fields.is_empty() {
@@ -28,10 +28,10 @@ pub fn gen_event_enum(evts: &Vec<SmacEvent>) -> Option<ItemEnum> {
 
     for e in evts {
         if !e.evt_fields.is_empty() {
-            name_list.push(format_ident!("{}", e.name));
-            name_list_arg.push(format_ident!("Param{}", e.name));
+            name_list.push(format_ident!("{}", e.name.as_ref().unwrap().to_string()));
+            name_list_arg.push(format_ident!("Param{}", e.name.as_ref().unwrap().to_string()));
         } else {
-            unit_name_list.push(format_ident!("{}", e.name));
+            unit_name_list.push(format_ident!("{}", e.name.as_ref().unwrap().to_string()));
         }
     }
 
@@ -61,16 +61,10 @@ pub fn gen_event_enum(evts: &Vec<SmacEvent>) -> Option<ItemEnum> {
     Some(ie)
 }
 
-pub fn get_state_enum(state_list: &Vec<String>) -> Option<ItemEnum> {
-    let mut state_idents: Vec<Ident> = vec![];
-
-    for st in state_list {
-        state_idents.push(format_ident!("{}", st));
-    }
-
+pub fn get_state_enum(state_list: &Vec<Ident>) -> Option<ItemEnum> {
     let ie: ItemEnum = parse_quote!(
         enum SmacState {
-            #(#state_idents),*
+            #(#state_list),*
         }
     );
 
@@ -79,13 +73,14 @@ pub fn get_state_enum(state_list: &Vec<String>) -> Option<ItemEnum> {
 
 #[cfg(test)]
 mod tests {
+
     use crate::custom_parse::StateMachine;
 
     use super::{gen_event_enum, gen_event_struct, get_state_enum};
 
     #[test]
     fn event_test_1() {
-        let input = "event \"TestE1\" { dd: u8, }";
+        let input = "event TestE1 { dd: u8, }";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
@@ -95,7 +90,7 @@ mod tests {
 
     #[test]
     fn event_test_2() {
-        let input = "event \"TestE1\" {}";
+        let input = "event TestE1 {}";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
@@ -106,8 +101,8 @@ mod tests {
     #[test]
     fn event_test_3() {
         let input = "
-            event \"TestE1\" {}
-            event \"TestE2\" {}
+            event TestE1 {}
+            event TestE2 {}
             ";
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
@@ -123,8 +118,8 @@ mod tests {
     #[test]
     fn event_test_4() {
         let input = "
-            event \"TestE1\" { k : u8 }
-            event \"TestE2\" { t : u8 }
+            event TestE1 { k : u8 }
+            event TestE2 { t : u8 }
             ";
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
@@ -140,8 +135,8 @@ mod tests {
     #[test]
     fn event_test_5() {
         let input = "
-            event \"TestE1\" { k : u8 }
-            event \"TestE2\" {}
+            event TestE1 { k : u8 }
+            event TestE2 {}
             ";
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
@@ -156,14 +151,15 @@ mod tests {
     #[test]
     fn state_test_1() {
         let input = "
-                state  \"S1\"
-                state  \"S2\"
-                state  \"S3\"
-                state  \"S4\"
+                state  S1
+                state  S2
+                state  S3
+                state  S4
             ";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
 
         let _ = get_state_enum(&smac.state_list);
     }
+
 }

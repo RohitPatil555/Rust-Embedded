@@ -4,7 +4,7 @@ extern crate proc_macro;
 use crate::custom_parse::StateMachine;
 use code_gen::{gen_event_enum, gen_event_struct, get_state_enum};
 use proc_macro::TokenStream;
-use quote::{format_ident, quote};
+use quote::quote;
 use syn::parse_macro_input;
 
 mod code_gen;
@@ -15,7 +15,7 @@ mod custom_token;
 #[proc_macro]
 pub fn state_mac(input_stream: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input_stream as StateMachine);
-    let stname = format_ident!("{}", input.name);
+    let stname = input.name;
     let pun = input.context_fields;
     let mut tk = TokenStream::new();
     let mut out = quote!(
@@ -41,7 +41,7 @@ pub fn state_mac(input_stream: TokenStream) -> TokenStream {
     out = quote!(#st_enum);
     tk.extend(TokenStream::from(out));
 
-    let st_default = format_ident!("{}", input.state_default);
+    let st_default = input.state_default.unwrap();
     out = quote!(static STATE: SmacState = SmacState::#st_default;);
     tk.extend(TokenStream::from(out));
 
