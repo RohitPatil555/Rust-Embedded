@@ -1,7 +1,7 @@
-use crate::custom_parse::SmacEvent;
+use crate::custom_parse::{SmacEvent,SmacEventProc};
 use proc_macro2::Ident;
 use quote::format_ident;
-use syn::{parse_quote, ItemEnum, ItemStruct};
+use syn::{parse_quote, ItemEnum, ItemStruct, ItemFn, Arm};
 
 pub fn gen_event_struct(evt: &SmacEvent) -> Option<ItemStruct> {
     let name = format_ident!("Param{}", evt.name.as_ref().unwrap().to_string());
@@ -69,6 +69,70 @@ pub fn get_state_enum(state_list: &Vec<Ident>) -> Option<ItemEnum> {
     );
 
     Some(ie)
+}
+
+pub fn get_proc_function(st_evt_proc: &SmacEventProc) -> Option<ItemFn> {
+    let st_ident = st_evt_proc.state_name.as_ref().unwrap();
+    let st_name : String = st_evt_proc.state_name.as_ref().unwrap().to_string();
+    let evt_name : String = st_evt_proc.event_name.as_ref().unwrap().to_string();
+    let func_name = format_ident!("proc_{}_{}", st_name, evt_name);
+    let proc_func : ItemFn = parse_quote! (
+        fn  #func_name() -> SmacState {
+            SmacState::#st_ident
+        }
+    );
+
+    Some(proc_func)
+}
+
+pub fn get_state_function(evts: &Vec<SmacEvent>, state_name: &Ident) -> ItemFn {
+    let mut evt_list: Vec<Arm> = vec![];
+
+     for evt in evts {
+         let evt_ident = evt.name.as_ref().unwrap();
+         let func_name = format_ident!("proc_{}_{}", state_name.to_string(), evt_ident.to_string());
+         let evt_stmt : Arm = parse_quote! {
+             SmacEvent::#evt_ident => #func_name()
+         };
+         evt_list.push(evt_stmt);
+     }
+
+    let func_name = format_ident!("proc_{}", state_name.to_string());
+    let state_proc : ItemFn = parse_quote!(
+        fn #func_name(evt : SmacEvent) -> SmacState {
+            let state = match evt {
+                #(#evt_list),*
+            };
+
+            state
+        }
+    );
+
+    state_proc
+}
+
+pub fn get_interface_function(state_list: &Vec<Ident>, smac_name: &Ident) -> ItemFn {
+    let mut arm_list: Vec<Arm> = vec![];
+    for st in state_list {
+        let st_proc = format_ident!("proc_{}",st.to_string());
+        let st_stmt : Arm = parse_quote!{
+            SmacState::#st => #st_proc(evt)
+        };
+        arm_list.push(st_stmt);
+    }
+
+    let func_name = format_ident!("proc_events_{}", smac_name.to_string());
+    let intf_func : ItemFn = parse_quote!(
+        fn #func_name(evt: SmacEvent) {
+            unsafe {
+                G_STATE = match G_STATE {
+                    #(#arm_list),*
+                }
+            }
+        }
+    );
+
+    intf_func
 }
 
 #[cfg(test)]

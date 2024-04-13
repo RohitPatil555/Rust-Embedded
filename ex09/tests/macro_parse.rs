@@ -9,7 +9,6 @@ state_mac!(
     }
 
     event testE1 {
-        j: u8,
     }
 
     event testE2 {
@@ -23,6 +22,34 @@ state_mac!(
     default S0
 
     proc S0:testE1 {
+        let _ = 20;
+    }
+
+    proc S0:testE2 {
+        let _ = 20;
+    }
+
+    proc S1:testE1 {
+        let _ = 20;
+    }
+
+    proc S1:testE2 {
+        let _ = 20;
+    }
+
+    proc S2:testE1 {
+        let _ = 20;
+    }
+
+    proc S2:testE2 {
+        let _ = 20;
+    }
+
+    proc S3:testE1 {
+        let _ = 20;
+    }
+
+    proc S3:testE2 {
         let _ = 20;
     }
 );

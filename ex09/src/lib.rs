@@ -2,10 +2,10 @@
 
 extern crate proc_macro;
 use crate::custom_parse::StateMachine;
-use code_gen::{gen_event_enum, gen_event_struct, get_state_enum};
+use code_gen::*;
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::parse_macro_input;
+use syn::{parse_macro_input,Stmt, parse_quote};
 
 mod code_gen;
 mod custom_parse;
@@ -43,6 +43,28 @@ pub fn state_mac(input_stream: TokenStream) -> TokenStream {
 
     let st_default = input.state_default.unwrap();
     out = quote!(static STATE: SmacState = SmacState::#st_default;);
+    tk.extend(TokenStream::from(out));
+
+    for pse in input.proc_list {
+        let proc_func = get_proc_function(&pse);
+        out = quote!( #proc_func );
+        tk.extend(TokenStream::from(out));
+    }
+
+    for _st in &input.state_list {
+        let st_proc_func = get_state_function(&input.event_list, _st);
+        out = quote!( #st_proc_func );
+        tk.extend(TokenStream::from(out));
+    }
+
+    let global_state_define: Stmt = parse_quote!{
+        static mut G_STATE : SmacState = SmacState::#st_default;
+    };
+    out = quote!( #global_state_define );
+    tk.extend(TokenStream::from(out));
+
+    let st_intf_func = get_interface_function(&input.state_list, stname.as_ref().unwrap());
+    out = quote!( #st_intf_func );
     tk.extend(TokenStream::from(out));
 
     tk
