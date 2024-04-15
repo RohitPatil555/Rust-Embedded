@@ -1,229 +1,217 @@
-use crate::custom_parse::{SmacEvent,SmacEventProc};
-use proc_macro2::Ident;
+use crate::custom_parse::{StateMachine, SmacEvent};
 use quote::format_ident;
-use syn::{parse_quote, ItemEnum, ItemStruct, ItemFn, Arm};
+use syn::{parse_quote, Ident, Arm, Expr, Stmt,
+    ItemEnum, ItemStruct, ItemImpl, ItemFn};
 
-pub fn gen_event_struct(evt: &SmacEvent) -> Option<ItemStruct> {
-    let name = format_ident!("Param{}", evt.name.as_ref().unwrap().to_string());
-    let fields = &evt.evt_fields;
+impl StateMachine {
+    pub fn create_event_enum(&self) -> ItemEnum {
+        let smac_name = self.name.as_ref().unwrap();
+        let mut event_types : Vec<&Ident> = vec![];
+        for evt in &self.event_list {
+            let evt_ident = evt.name.as_ref().unwrap();
 
-    if !fields.is_empty() {
-        let ost: ItemStruct = parse_quote!(
-            struct #name {
-                #fields
+            event_types.push(evt_ident);
+        }
+        let event_enum_name = format_ident!("{}Event", smac_name);
+
+        let event_enum : ItemEnum = parse_quote!(
+            enum #event_enum_name {
+                #(#event_types),*
             }
         );
 
-        return Some(ost);
+        event_enum
     }
 
-    None
-}
+    pub fn create_state_enum(&self) -> ItemEnum {
+        let smac_name = self.name.as_ref().unwrap();
+        let state_types = &self.state_list;
 
-pub fn gen_event_enum(evts: &Vec<SmacEvent>) -> Option<ItemEnum> {
-    let mut name_list: Vec<Ident> = vec![];
-    let mut name_list_arg: Vec<Ident> = vec![];
-    let mut unit_name_list: Vec<Ident> = vec![];
-    let ie: ItemEnum;
+        let state_enum_name = format_ident!("{}State", smac_name);
 
-    for e in evts {
-        if !e.evt_fields.is_empty() {
-            name_list.push(format_ident!("{}", e.name.as_ref().unwrap().to_string()));
-            name_list_arg.push(format_ident!("Param{}", e.name.as_ref().unwrap().to_string()));
-        } else {
-            unit_name_list.push(format_ident!("{}", e.name.as_ref().unwrap().to_string()));
-        }
-    }
-
-    if name_list.is_empty() && unit_name_list.is_empty() {
-        return None;
-    } else if name_list.is_empty() {
-        ie = parse_quote!(
-            enum SmacEvent {
-                #(#unit_name_list),*
+        let state_enum : ItemEnum = parse_quote!(
+            enum #state_enum_name {
+                #(#state_types),*
             }
         );
-    } else if unit_name_list.is_empty() {
-        ie = parse_quote!(
-            enum SmacEvent {
-                #(#name_list(#name_list_arg)),*
-            }
-        );
-    } else {
-        ie = parse_quote!(
-            enum SmacEvent {
-                #(#unit_name_list),* ,
-                #(#name_list(#name_list_arg)),*
-            }
-        );
+
+        state_enum
     }
 
-    Some(ie)
-}
+    pub fn create_state_default(&self) -> ItemImpl {
+        let smac_name = self.name.as_ref().unwrap();
+        let state_default = self.state_default.as_ref().unwrap();
 
-pub fn get_state_enum(state_list: &Vec<Ident>) -> Option<ItemEnum> {
-    let ie: ItemEnum = parse_quote!(
-        enum SmacState {
-            #(#state_list),*
-        }
-    );
-
-    Some(ie)
-}
-
-pub fn get_proc_function(st_evt_proc: &SmacEventProc) -> Option<ItemFn> {
-    let st_ident = st_evt_proc.state_name.as_ref().unwrap();
-    let st_name : String = st_evt_proc.state_name.as_ref().unwrap().to_string();
-    let evt_name : String = st_evt_proc.event_name.as_ref().unwrap().to_string();
-    let func_name = format_ident!("proc_{}_{}", st_name, evt_name);
-    let proc_func : ItemFn = parse_quote! (
-        fn  #func_name() -> SmacState {
-            SmacState::#st_ident
-        }
-    );
-
-    Some(proc_func)
-}
-
-pub fn get_state_function(evts: &Vec<SmacEvent>, state_name: &Ident) -> ItemFn {
-    let mut evt_list: Vec<Arm> = vec![];
-
-     for evt in evts {
-         let evt_ident = evt.name.as_ref().unwrap();
-         let func_name = format_ident!("proc_{}_{}", state_name.to_string(), evt_ident.to_string());
-         let evt_stmt : Arm = parse_quote! {
-             SmacEvent::#evt_ident => #func_name()
-         };
-         evt_list.push(evt_stmt);
-     }
-
-    let func_name = format_ident!("proc_{}", state_name.to_string());
-    let state_proc : ItemFn = parse_quote!(
-        fn #func_name(evt : SmacEvent) -> SmacState {
-            let state = match evt {
-                #(#evt_list),*
-            };
-
-            state
-        }
-    );
-
-    state_proc
-}
-
-pub fn get_interface_function(state_list: &Vec<Ident>, smac_name: &Ident) -> ItemFn {
-    let mut arm_list: Vec<Arm> = vec![];
-    for st in state_list {
-        let st_proc = format_ident!("proc_{}",st.to_string());
-        let st_stmt : Arm = parse_quote!{
-            SmacState::#st => #st_proc(evt)
-        };
-        arm_list.push(st_stmt);
-    }
-
-    let func_name = format_ident!("proc_events_{}", smac_name.to_string());
-    let intf_func : ItemFn = parse_quote!(
-        fn #func_name(evt: SmacEvent) {
-            unsafe {
-                G_STATE = match G_STATE {
-                    #(#arm_list),*
+        let state_enum_name = format_ident!("{}State", smac_name);
+        
+        let state_default_impl : ItemImpl = parse_quote!(
+            impl Default for #state_enum_name {
+                fn default() -> Self {
+                    #state_enum_name::#state_default
                 }
             }
-        }
-    );
+        );
 
-    intf_func
-}
-
-#[cfg(test)]
-mod tests {
-
-    use crate::custom_parse::StateMachine;
-
-    use super::{gen_event_enum, gen_event_struct, get_state_enum};
-
-    #[test]
-    fn event_test_1() {
-        let input = "event TestE1 { dd: u8, }";
-
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
-
-        let st = gen_event_struct(&smac.event_list[0]);
-        assert_ne!(st, None, "Struct is not exepected to be None type");
+        state_default_impl
     }
 
-    #[test]
-    fn event_test_2() {
-        let input = "event TestE1 {}";
+    pub fn create_smac_struct(&self) -> ItemStruct {
+        // generate structure for self
+        let smac_name = self.name.as_ref().unwrap();
+        let smac_context = &self.context_fields;
+        let smac_state_name = format_ident!("{}State",smac_name.to_string());
 
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+        let smac_struct : ItemStruct = parse_quote!(
+            #[derive(Default)]
+            struct #smac_name {
+                state : #smac_state_name,
+                #smac_context
+            }
+        );
 
-        let st = gen_event_struct(&smac.event_list[0]);
-        assert_eq!(st, None, "Fail to get None");
+        smac_struct
     }
 
-    #[test]
-    fn event_test_3() {
-        let input = "
-            event TestE1 {}
-            event TestE2 {}
-            ";
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+    pub fn create_smac_impl(&self) -> ItemImpl {
+        let smac_name = self.name.as_ref().unwrap();
+        let mut func_list : Vec<ItemFn> = vec![];
 
-        for e in &smac.event_list {
-            let st = gen_event_struct(&e);
-            assert_eq!(st, None, "Expected to get argument structure as none");
+        func_list.push(self._create_process_func());
+
+        for _st in &self.state_list {
+            let _st_func = self._create_state_process_function(_st);
+            func_list.push(_st_func);
+
+            // Generate event related APIs.
+            for _e in &self.event_list {
+                let _evt_func = self._create_state_event_process_function(_st, &_e);
+                func_list.push(_evt_func);
+            }
         }
 
-        let out = gen_event_enum(&smac.event_list).unwrap();
-        println!("{:?}", out);
+        let smac_impl : ItemImpl = parse_quote!(
+            impl #smac_name {
+                pub fn new() -> Self {
+                    #smac_name::default()
+                }
+
+                #(#func_list)*
+            }
+        );
+
+        smac_impl
     }
 
-    #[test]
-    fn event_test_4() {
-        let input = "
-            event TestE1 { k : u8 }
-            event TestE2 { t : u8 }
-            ";
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+    fn _create_process_func(&self) -> ItemFn {
+        let smac_name = self.name.as_ref().unwrap();
+        let smac_event_name = format_ident!("{}Event", smac_name); 
+        let smac_state_type = format_ident!("{}State", smac_name);    
+        let mut arm_list : Vec<Arm> = vec![];
 
-        for e in &smac.event_list {
-            let st = gen_event_struct(&e);
-            assert_ne!(st, None, "Created Parameter Structure");
+        for smac_st in &self.state_list {
+            let _func_name = format_ident!("_proc_{}", smac_st.to_string());
+            let _arm : Arm = parse_quote!(
+                #smac_state_type::#smac_st => self.#_func_name(evt)
+            );
+            arm_list.push(_arm);
+        }
+        
+        let proc_fn : ItemFn = parse_quote!(
+            pub fn process(&mut self, evt: #smac_event_name) {
+                self.state = match self.state {
+                    #(#arm_list),*
+                };
+            }
+        );
+
+        proc_fn
+    }
+
+    fn _create_state_process_function(&self, _state: &Ident) -> ItemFn {
+        let smac_name = self.name.as_ref().unwrap();
+        let smac_event_type = format_ident!("{}Event", smac_name);    
+        let smac_state_type = format_ident!("{}State", smac_name);
+        let mut arm_list : Vec<Arm> = vec![];
+
+        for evt in &self.event_list {
+            let evt_name = evt.name.as_ref().unwrap();
+            let _func_name = format_ident!("_proc_{}_{}",_state.to_string(), evt_name.to_string());
+            let _arm : Arm = parse_quote!(
+                #smac_event_type::#evt_name => self.#_func_name()
+            );
+            arm_list.push(_arm);
         }
 
-        let out = gen_event_enum(&smac.event_list).unwrap();
-        println!("{:?}", out);
+        let _proc_func = format_ident!("_proc_{}",_state.to_string());
+        let proc_state : ItemFn = parse_quote!(
+            fn #_proc_func(&self, evt: #smac_event_type) -> #smac_state_type {
+                let state = match evt {
+                    #(#arm_list),*
+                };
+
+                state
+            }
+        );
+
+        proc_state
     }
 
-    #[test]
-    fn event_test_5() {
-        let input = "
-            event TestE1 { k : u8 }
-            event TestE2 {}
-            ";
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+    fn _replace_next_state(&self, _proc_list: &Vec<Stmt>) -> Vec<Stmt> {
+        let smac_name = self.name.as_ref().unwrap();
+        let smac_state_type = format_ident!("{}State", smac_name);
+        //let clone_data = self.proc_list.clone();
+        let final_stmt = _proc_list.clone()
+                        .into_iter()
+                        .map(|stmt| match stmt {
+                            Stmt::Expr(ref expr, _) => {
+                                if let Expr::Assign(ref assign) = expr {
+                                    if let Expr::Path(lpath) = &*assign.left {
+                                        if let Some(lident) = lpath.path.get_ident() {
+                                            if lident.to_string() == "next_state" {
+                                                if let Expr::Path(rpath) = &*assign.right {
+                                                    if let Some(rident) = rpath.path.get_ident() {
+                                                        let stmt_change : Stmt = parse_quote!(
+                                                            state = #smac_state_type::#rident;
+                                                        );
+                                                        return stmt_change;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
 
-        for e in &smac.event_list {
-            let _ = gen_event_struct(&e);
-        }
+                                stmt
+                            }
+                            _ => stmt,
+                        })
+                        .collect::<Vec<_>>();
 
-        let out = gen_event_enum(&smac.event_list).unwrap();
-        println!("{:?}", out);
+        final_stmt
     }
 
-    #[test]
-    fn state_test_1() {
-        let input = "
-                state  S1
-                state  S2
-                state  S3
-                state  S4
-            ";
+    fn _create_state_event_process_function(&self, _state: &Ident, _event: &SmacEvent) -> ItemFn {
+        let smac_event_ident = _event.name.as_ref().unwrap();
+        let smac_name = self.name.as_ref().unwrap();
+        //let smac_event_type = format_ident!("{}Event", smac_name);    
+        let smac_state_type = format_ident!("{}State", smac_name);
+        let _smac_proc = self.proc_list.iter().find(|_proc| 
+                (_proc.state_name.as_ref().unwrap().to_string() == _state.to_string() && 
+                 _proc.event_name.as_ref().unwrap().to_string() == _event.name.as_ref().unwrap().to_string())
+            );
+        
+        let _non_update_proc_contain = &_smac_proc.as_ref().unwrap().event_proc_list;
+        let _proc_contain = self._replace_next_state(_non_update_proc_contain);
 
-        let smac = syn::parse_str::<StateMachine>(input).unwrap();
+        let _proc_func = format_ident!("_proc_{}_{}",_state.to_string(), smac_event_ident.to_string());
+        let proc_event : ItemFn = parse_quote!(
+            fn #_proc_func(&self) -> #smac_state_type {
+                let mut state = #smac_state_type::#_state;
+                #(#_proc_contain)*
+                state               
+            }
+        );
 
-        let _ = get_state_enum(&smac.state_list);
+        proc_event
     }
-
 }

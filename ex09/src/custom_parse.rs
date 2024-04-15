@@ -3,7 +3,7 @@ use proc_macro2::Span;
 use syn::{
     braced,
     parse::{Parse, ParseStream},
-    punctuated::Punctuated,
+    punctuated::Punctuated, Block,
     Field, Result, Stmt, Token, Ident, Error
 };
 
@@ -21,7 +21,7 @@ pub(crate) struct StateMachine {
 pub(crate) struct SmacEventProc {
     pub state_name: Option<Ident>,
     pub event_name: Option<Ident>,
-    pub event_proc_list: Punctuated<Stmt, Token![;]>,
+    pub event_proc_list: Vec<Stmt>,
     state_span: Option<Span>,
     event_span: Option<Span>,
 }
@@ -133,7 +133,7 @@ impl Parse for SmacEventProc {
 
         event_proc.state_name = Some(state_name);
         event_proc.event_name = Some(event_name);
-        event_proc.event_proc_list = content.parse_terminated(Stmt::parse, Token![;])?;
+        event_proc.event_proc_list = content.call(Block::parse_within)?;
 
         Ok(event_proc)
     }
@@ -249,11 +249,13 @@ mod tests {
             state S0
             default S0
             proc S0 : e0 {
-                let _ = 20;
+                let x = 20;
             }
             ";
 
         let smac = syn::parse_str::<StateMachine>(input).unwrap();
+
+        println!("Hay this is working");
 
         assert_eq!(smac.proc_list.is_empty(), false);
         for proc in smac.proc_list {

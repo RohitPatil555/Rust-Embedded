@@ -19,7 +19,6 @@ state_mac!{
 
     event <event_name> {
         // rust struct define style here e.g.
-        // temp: u8;
     }
     
     state <state_name>
@@ -33,17 +32,14 @@ state_mac!{
 
 ```
 
-## Generated Structure
+## Generated Code Structure
 
 Above code generate below structure.
 
 ```ignore
-pub struct <event_name>_io {
-    pub #<event_name context>
-}
 
 pub enum <sm_name>_events {
-    pub <event_name>(&<event_name_io>),
+    <event_name>
 }
 
 enum <sm_name>_states {
@@ -51,21 +47,41 @@ enum <sm_name>_states {
 }
 
 pub struct <sm_name> {
-    #context
+    state: <sm_name>_states,
 }
 
 impl <sm_name> {
+    pub fn new() -> Self {
+        Box::new(<sm_name>::default())
+    }
+
     pub fn process(self, <sm_name_events>) -> Option(u8) {
         // add match statement for state
         // and call corresponding state processing function.
     } 
     
-    fn process_<state_name>(self, <sm_name_events>) -> Option(u8) {
+    fn proc_<state_name>(self, <sm_name_event>) -> <sm_name>_states {
          // add event match case 
          // handle processing of events.
     }    
+
+    fn proc_<state_name>_<event_name>(self, <sm_name_event>) {
+        // add processing code of event.
+    }
 }
 
+```
+
+## Interface Use
+
+* First create state machine instance using below interface.
+```ignore
+    sm_inst = <sm_name>::new();
+```
+
+* Then process event using below API.
+```ignore
+    sm_inst.process(event);
 ```
 
 ## Code Observation
