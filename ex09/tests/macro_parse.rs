@@ -1,3 +1,4 @@
+#![no_std]
 extern crate ex09;
 
 use ex09::state_mac;
@@ -20,7 +21,6 @@ state_mac!(
     default MotorIdle
 
     proc MotorIdle:PressStartButton {
-        println!("Motor Started ...");
         G_MOTORCOUNT.fetch_add(1, Ordering::SeqCst);
         next_state = MotorRunning;
     }
@@ -33,7 +33,6 @@ state_mac!(
 
     proc MotorRunning:PressStopButton {
         G_MOTORCOUNT.fetch_sub(1, Ordering::SeqCst);
-        println!("Motor Stopped ...");
     }
 );
 

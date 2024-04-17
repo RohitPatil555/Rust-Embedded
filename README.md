@@ -10,3 +10,4 @@ In this we will look at basic technique that can get use by rust while developin
 * Example 6 - In this, we will see management of structure instances in embedded as static allocation.
 * Example 7 - This focus on getting basic understanding about macro_rules.
 * Example 8 - Basic example of procedure macro.
+* Example 9 - Develop DSL using procedure macro.
