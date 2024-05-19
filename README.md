@@ -11,3 +11,4 @@ In this we will look at basic technique that can get use by rust while developin
 * Example 7 - This focus on getting basic understanding about macro_rules.
 * Example 8 - Basic example of procedure macro.
 * Example 9 - Develop DSL using procedure macro.
+* Example 10 - Build derive macro to pack information in json format.
