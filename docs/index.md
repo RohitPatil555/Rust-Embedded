@@ -3,4 +3,4 @@
 
 This will help you to understand how to use Rust in Embedded.
 
-* [Intro](presentation/intro.html)
+* [Intro](https://rohitpatil555.github.io/Rust-Embedded/presentation/intro.html)
