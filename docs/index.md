@@ -3,4 +3,4 @@
 
 This will help you to understand how to use Rust in Embedded.
 
-* ![Intro](presentation/intro.md)
+* ![Intro](presentation/intro.html)
