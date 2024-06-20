@@ -21,7 +21,7 @@ Rust Programming Language
 
 ## Rust History
 
-- 2006 : Lift failure cause Graydon Hoare develop Rust language.
+- 2006 : Lift failure cause "Graydon Hoare" develop Rust language.
 - 2009 : Mozilla sponsored language.
 - 2015 : First stable release 
 - 2021 : Rust foundation.
@@ -46,8 +46,8 @@ Microsoft and Google performed some exercise on C/C++ code and come up with supr
 
 https://www.cisa.gov/news-events/news/urgent-need-memory-safety-software-products
 
-Here they praposed two possible solution to mitigate memory safety issue
-- Hardware : hardware to track meory allocation, boundary and free.
+Here they suggested two possible solution to mitigate memory safety issue
+- Hardware : hardware to track memory allocation, boundary and free.
 - Software : Memory safe language.
 
 ---
@@ -184,7 +184,7 @@ Output of code shows value got updated to 22 event x buffer got free in destruct
 ```
 update_test2 => 10
 main => 22
-free(): double free detected in tcache 2
+free(): double free detected in app
 Aborted (core dumped)
 ```
 
