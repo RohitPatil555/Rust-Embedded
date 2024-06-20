@@ -275,8 +275,8 @@ For more information about this error, try `rustc --explain E0382`.
 
 ## Setup Development Environment
 
-- Install Rust : Link 
-- Use vscode or vim 
+- Install Rust : [Link](https://www.rust-lang.org/tools/install) 
+- Use vscode with [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) or neovim  
 
 ---
 <style scoped>section{font-size:20px;}</style>
