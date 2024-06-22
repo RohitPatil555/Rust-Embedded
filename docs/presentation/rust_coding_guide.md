@@ -13,7 +13,7 @@ style: |
   }
 ---
 
-## <!--fit-->Rust Coding Guide
+## <!--fit--> Rust Coding Guide
 
 ---
 
@@ -21,8 +21,8 @@ style: |
 
 - Variable definition
 - Variable Ownership, Borrowing and Lifetime
-- trait 
-- closure 
+- Trait & Generic
+- Closure 
 - Asynchronous Programming
 
 ---
@@ -110,6 +110,7 @@ impl Name for Foo {
 ### Trait from standard library
 
 - Core library use to control object behavior (e.g. copy constructor, destructor and debug)
+
 ```rust
 #![derive(Debug,Copy)] // here Debug Copy macro expand same like drop shown below.
 struct Cat {};
@@ -122,23 +123,88 @@ impl Drop for Cat {
 ```
 ---
 
+### Trait Generic
+
+-  Similar to C++ template, but only applied on trait.
+
+<div class="columns">
+<div>
+
+```rust
+pub trait Add<RHS = Self> {
+    type Output;
+    fn add(self, rhs: RHS) -> Self::Output;
+}
+```
+</div>
+<div>
+
+```rust
+#[derive(Debug, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -> Point {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+```
+</div>
+</div>
+
+---
+
 ### Closure
 
+- Similar to C++ lambda expression, can be expanded as inline function.
+- And also can work like functional programming, allocated on heap memory (Rust take care free part)
+- Three type of closure
+    - FnOnce, FnMut, Fn 
+- Example
+```rust
+let square = |x| x * x;
+assert_eq!(square(5), 25);
+```
+
+---
+
+### Function Pointer
+
+- Different from closure but can be use like Fn closure.
+- function pointers can vary based on what ABI they use (e.g. _extern "C" fn(u32) -> u32_ )
+
+```rust
+    fn add_one(x: usize) -> usize {
+        x + 1
+    }
+
+    let ptr: fn(usize) -> usize = add_one;
+    assert_eq!(ptr(5), 6);
+```
 ---
 
 ### Asynchronous Programming
 
 - Below code show how asynchronous program look like and work.
+
 ```rust
 async fn fun1() {
     ...
     fun2().await; // this block fun1 and start execute fun2. 
-    ...
+    ... // fun1 got resumed.
 }
 
 async fn fun2() {
     ...
-} // this will unblock func1.
+} // this will unblock fun1.
 
 ```
 - It look similar to cooperative scheduler.

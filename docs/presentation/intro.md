@@ -28,7 +28,7 @@ Rust Programming Language
 
 ---
 
-### <!-- fit --> Why Rust ?
+# Why Rust ?
 
 ---
 
@@ -65,7 +65,7 @@ Let see some example in C/C++ to understand more about Rust.
 
 ---
 
-##### <!--fit--> Example 1
+# Example 1
 
 ---
 
@@ -123,7 +123,7 @@ fn main() {
 
 ---
 
-##### <!--fit--> Example 2
+# Example 2
 
 ---
 
@@ -269,14 +269,17 @@ For more information about this error, try `rustc --explain E0382`.
 
 ---
 
-### <!--fit--> Let start with Rust
+# Let start with Rust
 
 ---
 
 ## Setup Development Environment
 
+- [Rust Playground](https://play.rust-lang.org/) : To try out
 - Install Rust : [Link](https://www.rust-lang.org/tools/install) 
-- Use vscode with [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) or neovim  
+- Use vscode with [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) or neovim 
+- Use gdb or lldb to debug code.
+    - symbol name for function in rust is <module name>::<function name>
 
 ---
 <style scoped>section{font-size:20px;}</style>
@@ -348,6 +351,6 @@ Write code to add 3 number along with positive and negative test cases.
 
 ---
 
-# <!--fit--> ThankYou
+# ThankYou
 
 ---
