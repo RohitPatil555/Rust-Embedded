@@ -19,7 +19,8 @@
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h2 is="marp-h2" data-auto-scaling id="rust-coding-guide"> Rust Coding Guide</h2>
+<h2 is="marp-h2" data-auto-scaling id="rust-features"> Rust Features</h2>
+<h6 id="at-code-level">at code level</h6>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="2" data-paginate="true" data-class="invert" data-theme="uncover" data-style=".columns {
   display: grid;
@@ -32,7 +33,7 @@
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h2 id="rules">Rules</h2>
+<h2 id="contain">Contain</h2>
 <ul>
 <li>Variable definition</li>
 <li>Variable Ownership, Borrowing and Lifetime</li>
@@ -53,11 +54,11 @@
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
 <h3 id="variable-definition">Variable Definition</h3>
-<ul>
-<li>All variable by default define as constant or read-only</li>
-<li>To make them writeable use <em>mut</em> keyword.</li>
-</ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> : <span class="hljs-type">u32</span> = <span class="hljs-number">2</span>;
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> : <span class="hljs-type">u32</span>; <span class="hljs-comment">// declaration of variable x. </span>
+x = <span class="hljs-number">4</span>; <span class="hljs-comment">// allowed</span>
+x = <span class="hljs-number">5</span>; <span class="hljs-comment">// Not-allowed</span>
+
+<span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> : <span class="hljs-type">u32</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// all variable by default immutable type.</span>
 x = <span class="hljs-number">4</span>; <span class="hljs-comment">// Not allowed by compiler</span>
 
 <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">x</span> : <span class="hljs-type">u32</span> = <span class="hljs-number">2</span>;
@@ -79,16 +80,18 @@ x = <span class="hljs-number">4</span>; <span class="hljs-comment">// allowed</s
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h4 id="variable-ownership-borrowing-and-lifetime">Variable Ownership, Borrowing and Lifetime</h4>
-<ul>
-<li>In below statement, we will see how x variable ownership of u32 get transfer.</li>
-</ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> : <span class="hljs-type">u32</span> = <span class="hljs-number">10</span>;
-<span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> : <span class="hljs-type">u32</span>;
+<h4 id="variable---ownership">Variable - Ownership</h4>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> : <span class="hljs-type">Box</span>::&lt;<span class="hljs-type">u32</span>&gt;::<span class="hljs-title function_ invoke__">new</span>(<span class="hljs-number">10</span>);
+<span class="hljs-keyword">let</span> <span class="hljs-variable">z</span> : <span class="hljs-type">Box</span>::&lt;<span class="hljs-type">u32</span>&gt;::<span class="hljs-title function_ invoke__">new</span>(<span class="hljs-number">20</span>);
 
-y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.</span>
+<span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.</span>
 
-<span class="hljs-title function_ invoke__">func1</span>(y); <span class="hljs-comment">// ownership transfer to y. Now y is invalid.  </span>
+<span class="hljs-comment">// x is not available.</span>
+
+<span class="hljs-title function_ invoke__">func1</span>(y); <span class="hljs-comment">// ownership transfer to func1. Now y is invalid.  </span>
+
+<span class="hljs-comment">// y is not available.</span>
+
 </code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="5" data-paginate="true" data-class="invert" data-theme="uncover" data-style=".columns {
@@ -102,17 +105,15 @@ y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.<
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h4 id="variable-ownership-borrowing-and-lifetime-1">Variable Ownership, Borrowing and Lifetime</h4>
-<ul>
-<li>lifetime definition</li>
-</ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() {
-    <span class="hljs-keyword">let</span> <span class="hljs-variable">z</span> : <span class="hljs-type">u32</span> = <span class="hljs-number">0</span>;
-    <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> : <span class="hljs-type">u32</span> = <span class="hljs-number">10</span>;-------------------------+-
-    {                     --+                 x lifetime
-                            y lifetime        |
-        <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> : <span class="hljs-type">u32</span> = <span class="hljs-number">20</span>; --+-----------------+-
-    }
+<h4 id="variable---borrowing">Variable - Borrowing</h4>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">func2</span>(k : &amp;<span class="hljs-type">Box</span>&lt;<span class="hljs-type">u32</span>&gt;) {
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Borrowed z {}&quot;</span>, k);    
+}
+
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() {
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">z</span> = <span class="hljs-type">Box</span>::&lt;<span class="hljs-type">u32</span>&gt;::<span class="hljs-title function_ invoke__">new</span>(<span class="hljs-number">10</span>);
+    <span class="hljs-title function_ invoke__">func2</span>(&amp;z);
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;owner z {}&quot;</span>, z);
 }
 </code></pre>
 </section>
@@ -127,22 +128,25 @@ y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.<
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h3 id="trait">Trait</h3>
-<ul>
-<li>This act like abstract class as in c++ but not exact same.
-<ul>
-<li>It not have <em>vpointer</em> concept in Rust.</li>
-<li>But it can be derived from base trait.</li>
-</ul>
-</li>
-<li>trait can be seen as below:</li>
-</ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">trait</span> <span class="hljs-title class_">Name</span> {
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">func1</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span>;
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">func2</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span> {
-        <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;Hello Func2&quot;</span>)
+<h4 id="variable---lifetime">Variable - Lifetime</h4>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">get_min</span>&lt;<span class="hljs-symbol">&#x27;a</span>,<span class="hljs-symbol">&#x27;b</span>&gt;(x : &amp;<span class="hljs-symbol">&#x27;a</span> <span class="hljs-type">Box</span>&lt;<span class="hljs-type">u32</span>&gt;, y: &amp;<span class="hljs-symbol">&#x27;b</span> <span class="hljs-type">Box</span>&lt;<span class="hljs-type">u32</span>&gt;) <span class="hljs-punctuation">-&gt;</span> &amp;<span class="hljs-symbol">&#x27;a</span> <span class="hljs-type">Box</span>&lt;<span class="hljs-type">u32</span>&gt; {
+    <span class="hljs-keyword">if</span> x &gt; y {
+        y
+    } <span class="hljs-keyword">else</span> {
+        x
     }
 }
+
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() {
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> = <span class="hljs-type">Box</span>::&lt;<span class="hljs-type">u32</span>&gt;::<span class="hljs-title function_ invoke__">new</span>(<span class="hljs-number">10</span>); <span class="hljs-comment">// lifetime of x start</span>
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">z</span> : &amp;<span class="hljs-type">Box</span>&lt;<span class="hljs-type">u32</span>&gt;; <span class="hljs-comment">// lifetime of z start</span>
+    {                            
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> = <span class="hljs-type">Box</span>::&lt;<span class="hljs-type">u32</span>&gt;::<span class="hljs-title function_ invoke__">new</span>(<span class="hljs-number">20</span>); <span class="hljs-comment">// lifetime of y start</span>
+        z = <span class="hljs-title function_ invoke__">get_min</span>(&amp;x, &amp;y); <span class="hljs-comment">// return y - cause lifetime compilation error.</span>
+    } <span class="hljs-comment">// y lifetime End        </span>
+    
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Value of x : {}&quot;</span>, *z); 
+} <span class="hljs-comment">// x and z lifetime End</span>
 </code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="7" data-paginate="true" data-class="invert" data-theme="uncover" data-style=".columns {
@@ -156,16 +160,19 @@ y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.<
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h3 id="trait-application">Trait application</h3>
+<h3 id="trait">Trait</h3>
 <ul>
-<li>Trait are like functional abstraction and they applied to custom data structure as shown below.</li>
+<li>This act like abstract class as in c++ but not same.
+<ul>
+<li>no <em>vpointer</em> concept in Rust.</li>
+<li>It can be derived from base trait.</li>
+<li>trait not take memory space.</li>
+<li>For dynamic dispatch, it need allocation of object/instance.</li>
 </ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Foo</span> {};
-
-<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Name</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Foo</span> {
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">func1</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span> {
-        <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;Foo &quot;</span>)
-    }
+</li>
+</ul>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">trait</span> <span class="hljs-title class_">Name</span> {
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">func1</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span>;
 }
 </code></pre>
 </section>
@@ -180,19 +187,51 @@ y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.<
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h3 id="trait-from-standard-library">Trait from standard library</h3>
-<ul>
-<li>Core library use to control object behavior (e.g. copy constructor, destructor and debug)</li>
-</ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-meta">#![derive(Debug,Copy)]</span> <span class="hljs-comment">// here Debug Copy macro expand same like drop shown below.</span>
-<span class="hljs-keyword">struct</span> <span class="hljs-title class_">Cat</span> {};
+<h3 id="trait--dynamic-dispatch">Trait : Dynamic Dispatch</h3>
+<div class=columns>
+<div>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">trait</span> <span class="hljs-title class_">Sound</span> {
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">make_sound</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span>;
+}
 
-<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Drop</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Cat</span> {
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">drop</span>(&amp;<span class="hljs-keyword">mut</span> <span class="hljs-keyword">self</span>) {
-        <span class="hljs-comment">// cleanup logic</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">Cat</span>;
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">Dog</span>;
+
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Sound</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Cat</span> {
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">make_sound</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span> {
+        <span class="hljs-built_in">format!</span>(<span class="hljs-string">&quot;meow meow ..&quot;</span>)
     }
 }
+
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Sound</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Dog</span> {
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">make_sound</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span> {
+        <span class="hljs-built_in">format!</span>(<span class="hljs-string">&quot;woof woof ..&quot;</span>)
+    }
+}
+
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">get_animal</span>(x: <span class="hljs-type">u32</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Box</span>&lt;<span class="hljs-keyword">dyn</span> Sound&gt; {
+    <span class="hljs-keyword">if</span> x == <span class="hljs-number">1</span> {
+        <span class="hljs-type">Box</span>::<span class="hljs-title function_ invoke__">new</span>(Cat{})
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-type">Box</span>::<span class="hljs-title function_ invoke__">new</span>(Dog{})
+    }
+}
+
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() {
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">animal</span> = <span class="hljs-title function_ invoke__">get_animal</span>(<span class="hljs-number">1</span>);
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;1 -&gt; {}&quot;</span>, animal.<span class="hljs-title function_ invoke__">make_sound</span>());
+    animal = <span class="hljs-title function_ invoke__">get_animal</span>(<span class="hljs-number">2</span>);
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;2 -&gt; {}&quot;</span>, animal.<span class="hljs-title function_ invoke__">make_sound</span>());
+}
 </code></pre>
+</div>
+<div>
+<h6 id="output">output</h6>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-bash">1 -&gt; meow meow ..
+2 -&gt; woof woof ..
+</code></pre>
+</div>
+</div>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="9" data-paginate="true" data-class="invert" data-theme="uncover" data-style=".columns {
   display: grid;
@@ -205,38 +244,19 @@ y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.<
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h3 id="trait-generic">Trait Generic</h3>
+<h3 id="trait-from-standard-library">Trait from standard library</h3>
 <ul>
-<li>Similar to C++ template, but only applied on trait.</li>
+<li>Rust library use to control object behavior (e.g. copy constructor, destructor and debug)</li>
 </ul>
-<div class="columns">
-<div>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">trait</span> <span class="hljs-title class_">Add</span>&lt;RHS = <span class="hljs-keyword">Self</span>&gt; {
-    <span class="hljs-keyword">type</span> <span class="hljs-title class_">Output</span>;
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">add</span>(<span class="hljs-keyword">self</span>, rhs: RHS) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-keyword">Self</span>::Output;
-}
-</code></pre>
-</div>
-<div>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-meta">#[derive(Debug, PartialEq)]</span>
-<span class="hljs-keyword">struct</span> <span class="hljs-title class_">Point</span> {
-    x: <span class="hljs-type">i32</span>,
-    y: <span class="hljs-type">i32</span>,
-}
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-meta">#![derive(Debug,Copy)]</span> <span class="hljs-comment">// here Debug Copy macro expand same like drop shown below.</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">Test</span> {};
 
-<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Add</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Point</span> {
-    <span class="hljs-keyword">type</span> <span class="hljs-title class_">Output</span> = Point;
-
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">add</span>(<span class="hljs-keyword">self</span>, other: Point) <span class="hljs-punctuation">-&gt;</span> Point {
-        Point {
-            x: <span class="hljs-keyword">self</span>.x + other.x,
-            y: <span class="hljs-keyword">self</span>.y + other.y,
-        }
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Drop</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Test</span> {
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">drop</span>(&amp;<span class="hljs-keyword">mut</span> <span class="hljs-keyword">self</span>) {
+        <span class="hljs-comment">// cleanup logic</span>
     }
 }
 </code></pre>
-</div>
-</div>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-class="invert" data-theme="uncover" data-style=".columns {
   display: grid;
@@ -249,20 +269,51 @@ y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.<
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h3 id="closure">Closure</h3>
-<ul>
-<li>Similar to C++ lambda expression, can be expanded as inline function.</li>
-<li>And also can work like functional programming, allocated on heap memory (Rust take care free part)</li>
-<li>Three type of closure
-<ul>
-<li>FnOnce, FnMut, Fn</li>
-</ul>
-</li>
-<li>Example</li>
-</ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">let</span> <span class="hljs-variable">square</span> = |x| x * x;
-<span class="hljs-built_in">assert_eq!</span>(<span class="hljs-title function_ invoke__">square</span>(<span class="hljs-number">5</span>), <span class="hljs-number">25</span>);
+<h3 id="trait-generic">Trait Generic</h3>
+<div class="columns">
+<div>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">trait</span> <span class="hljs-title class_">Flame</span> {
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">get_color</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span>;
+}
+
+<span class="hljs-comment">// Generic function.</span>
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">flame_color</span>&lt;T&gt; (animal : T) 
+    <span class="hljs-keyword">where</span> T: Flame
+{
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Color of Flame : {}&quot;</span>, animal.<span class="hljs-title function_ invoke__">get_color</span>());
+}
+
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">GasolineCar</span>{}
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Flame</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">GasolineCar</span> {
+     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">get_color</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span> {
+        <span class="hljs-built_in">format!</span>(<span class="hljs-string">&quot;Blue&quot;</span>)
+     }
+}
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">DieselCar</span>{}
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Flame</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">DieselCar</span> {
+     <span class="hljs-keyword">fn</span> <span class="hljs-title function_">get_color</span>(&amp;<span class="hljs-keyword">self</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">String</span> {
+        <span class="hljs-built_in">format!</span>(<span class="hljs-string">&quot;Yellow&quot;</span>)
+     }
+}
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() {
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = GasolineCar{};
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">d</span> = DieselCar{};
+    
+    flame_color::&lt;GasolineCar&gt;(a);
+    flame_color::&lt;DieselCar&gt;(d);
+}
 </code></pre>
+</div>
+<div>
+<ul>
+<li>Similar to C++ template, but with trait.</li>
+</ul>
+<h6 id="output-1">output</h6>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-bash">Color of Flame : Blue
+Color of Flame : Yellow
+</code></pre>
+</div>
+</div>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="11" data-paginate="true" data-class="invert" data-theme="uncover" data-style=".columns {
   display: grid;
@@ -275,17 +326,19 @@ y = x; <span class="hljs-comment">// ownership transfer to y. Now x is invalid.<
   gap: 1rem;
 }
 ;" data-marpit-pagination-total="14" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
-<h3 id="function-pointer">Function Pointer</h3>
+<h3 id="closure">Closure</h3>
 <ul>
-<li>Different from closure but can be use like Fn closure.</li>
-<li>function pointers can vary based on what ABI they use (e.g. <em>extern &quot;C&quot; fn(u32) -&gt; u32</em> )</li>
+<li>Similar to C++ lambda expression, can be expanded as inline function.</li>
+<li>And also can work like functional programming, allocate on heap memory (Rust take care free part)</li>
+<li>Three type of closure
+<ul>
+<li>FnOnce, FnMut, Fn</li>
 </ul>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust">    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">add_one</span>(x: <span class="hljs-type">usize</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">usize</span> {
-        x + <span class="hljs-number">1</span>
-    }
-
-    <span class="hljs-keyword">let</span> <span class="hljs-variable">ptr</span>: <span class="hljs-title function_ invoke__">fn</span>(<span class="hljs-type">usize</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">usize</span> = add_one;
-    <span class="hljs-built_in">assert_eq!</span>(<span class="hljs-title function_ invoke__">ptr</span>(<span class="hljs-number">5</span>), <span class="hljs-number">6</span>);
+</li>
+<li>Example</li>
+</ul>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">let</span> <span class="hljs-variable">square</span> = |x| x * x;
+<span class="hljs-built_in">assert_eq!</span>(<span class="hljs-title function_ invoke__">square</span>(<span class="hljs-number">5</span>), <span class="hljs-number">25</span>);
 </code></pre>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="12" data-paginate="true" data-class="invert" data-theme="uncover" data-style=".columns {
