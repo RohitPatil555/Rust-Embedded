@@ -1,7 +1,7 @@
 title: Rust Embedded
 author: 
-  name: Rohit Patil
-  github: https://github.com/RohitPatil555/Rust-Embedded
+  - name: Rohit Patil
+  - github: https://github.com/RohitPatil555/Rust-Embedded
 
 description: >
   Please star my repository if you find it helpful.
@@ -12,4 +12,4 @@ header_pages:
   index.md
 
 minima:
-  skin: dark
+  - skin: dark
