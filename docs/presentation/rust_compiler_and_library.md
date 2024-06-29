@@ -1,6 +1,3 @@
-
-# Rust Compiler and Library
-
 ## Compiler High level View.
 
 For more detail please refer to [link](https://rustc-dev-guide.rust-lang.org/overview.html)

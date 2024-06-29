@@ -1,5 +1,3 @@
-# Rust Tools
-
 In this section, we will see supported tools by Rust.
 
 ## Static code analyzer
