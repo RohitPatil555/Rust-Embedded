@@ -3,7 +3,13 @@ author:
   name: Rohit Patil
   github: https://github.com/RohitPatil555/Rust-Embedded
 
-theme: hacker
+description: >
+  Please star my repository if you find it helpful.
+
+theme: minima
 
 header_pages:
   index.md
+
+minima:
+  skin: dark
