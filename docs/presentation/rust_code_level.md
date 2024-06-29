@@ -6,11 +6,17 @@ text-align: left
 class:
     - invert
 style: |
-  .columns {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-  }
+    .columns {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+    .warning {
+        padding: 10px;
+        background-color: gray;
+        text-align: left;
+        font-size: 50%;
+    }
 ---
 
 ## <!--fit--> Rust Features
@@ -26,6 +32,7 @@ style: |
 - Trait & Generic
 - Closure 
 - Asynchronous Programming
+- Unsafe Rust
 
 ---
 
@@ -282,6 +289,25 @@ async fn fun2() {
 
 ```
 - It look similar to cooperative scheduler.
+
+---
+
+### Unsafe Rust
+
+- Required : To access RAW pointer (e.g register access) OR to bypass rust memory barrier.
+- Rust provide unsafe block, where compiler rules get turned off.
+
+```
+    let mut num = 5;
+    let r1 = &num as *const i32;
+    unsafe {
+        println!("r1 is: {}", *r1);
+    }
+```
+
+<div class="warning">
+    <p>Best coding practice: Less percentage of unsafe code is better. </p>
+</div>
 
 ---
 
