@@ -1,3 +1,5 @@
+In this section, we will look at compiler and library structure of rust.
+
 ## Compiler High level View.
 
 For more detail please refer to [link](https://rustc-dev-guide.rust-lang.org/overview.html)
