@@ -1,9 +1,7 @@
-
-{:toc}
-
 # Rust Embedded
 
 This will help you to understand how to use Rust in Embedded.
+
 If you like my work, please go to [repository](https://github.com/RohitPatil555/Rust-Embedded) and click on *Star button* at top right corner.
 
 ## Basic Rust
@@ -19,3 +17,6 @@ If you like my work, please go to [repository](https://github.com/RohitPatil555/
 ## Additional Information
 * [Rust Tools](presentation/rust_tools.md)
 
+## Reference 
+
+* [Rust Open Source Book](https://doc.rust-lang.org/book/)
