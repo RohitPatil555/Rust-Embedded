@@ -5,8 +5,5 @@ author:
 description: >
   Please star my repository if you find it helpful.
 
-theme: minima
+theme: minimal
 
-minima:
-  social_links:
-  - { platform: github, user_url: "https://github.com/RohitPatil555/Rust-Embedded" }
