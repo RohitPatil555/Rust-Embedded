@@ -11,3 +11,9 @@ Cargo.lock
 
 # Remove .o files
 **/*.o
+
+# Remove all .bkp files
+**/*.bkp
+
+# Remove all .vscode files
+**/.vscode
