@@ -1,3 +1,8 @@
+# Index
+
+This will help you to understand how to use Rust in Embedded.
+<br/>
+If you like my work, please go to [repository](https://github.com/RohitPatil555/Rust-Embedded) and click on *Star button* at top right corner.
 
 ## Basic Rust
 
