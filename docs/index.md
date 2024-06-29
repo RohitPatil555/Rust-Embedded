@@ -1,5 +1,5 @@
 
-Refer to this guide to understand Rust for embedded systems. If you find it helpful, please support my repository by clicking the Star button on GitHub.
+Refer to this guide to understand Rust for embedded systems. If you find it helpful, please support [my repository](https://github.com/RohitPatil555/Rust-Embedded) by clicking the *Star button* on GitHub.
 
 ## Basic Rust
 
