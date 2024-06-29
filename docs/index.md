@@ -1,7 +1,5 @@
 
-This will help you to understand how to use Rust in Embedded.
-<br/>
-If you like my work, please go to [repository](https://github.com/RohitPatil555/Rust-Embedded) and click on *Star button* at top right corner.
+Refer to this guide to understand Rust for embedded systems. If you find it helpful, please support my repository by clicking the Star button on GitHub.
 
 ## Basic Rust
 
