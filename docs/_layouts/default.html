@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rust Embedded</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f1f1f1;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  position: fixed; /* Fixed position */
+  top: 0; /* Stick to the top */
+  left: 0; /* Stick to the left */
+  height: 100%; /* Full height */
+  overflow-y: auto; /* Scrollable if content exceeds height */
+}
+
+.main-content {
+  margin-left: 250px; /* Adjust for sidebar width */
+  padding: 20px;
+  flex: 1;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #555;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  {%- include footer.html -%}
+
+  <ul>
+    <li><a href="https://rohitpatil555.github.io/Rust-Embedded">Home</a></li>
+    <!-- Add more items as needed -->
+  </ul>
+</div>
+
+<div class="main-content">
+    {{ content }}
+</div>
+
+</body>
+</html>
