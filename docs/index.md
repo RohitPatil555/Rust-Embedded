@@ -19,4 +19,5 @@ Refer to this guide to understand Rust for embedded systems. If you find it help
 
 ## Reference 
 
-* [Rust Open Source Book](https://doc.rust-lang.org/book/)
+* [Rust Open Source Book](https://doc.rust-lang.org/book/){:target="_blank"}
+* [Rust Playground](https://play.rust-lang.org/){:target="_blank"}
