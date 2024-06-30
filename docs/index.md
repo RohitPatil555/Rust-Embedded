@@ -6,9 +6,9 @@ Refer to this guide to understand Rust for embedded systems. If you find it help
 
 ## Basic Rust
 
-* [Introduction](https://rohitpatil555.github.io/Rust-Embedded/presentation/intro.html)
+* [Introduction](https://rohitpatil555.github.io/Rust-Embedded/presentation/intro.html){:target="_blank"}
 * [Rust Compiler and Library](presentation/rust_compiler_and_library.md)
-* [Rust features at code level](https://rohitpatil555.github.io/Rust-Embedded/presentation/rust_code_level.html)
+* [Rust features at code level](https://rohitpatil555.github.io/Rust-Embedded/presentation/rust_code_level.html){:target="_blank"}
 
 ## Example
 
