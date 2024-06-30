@@ -1,9 +1,7 @@
 title: Rust Embedded 
-description: >
-  Refer to this guide to understand Rust for embedded systems. If you find it helpful, please support my repository by clicking the Star button on GitHub.
-
 author: Rohit Patil
-
 remote_theme: pages-themes/cayman@v0.2.0
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
+
+home_link: "https://rohitpatil555.github.io/Rust-Embedded/"
