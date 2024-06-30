@@ -5,3 +5,7 @@ plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
 
 home_link: https://rohitpatil555.github.io/Rust-Embedded/
+
+kramdown:
+  auto_ids: true
+  

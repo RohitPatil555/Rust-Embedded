@@ -12,7 +12,7 @@ Refer to this guide to understand Rust for embedded systems. If you find it help
 
 ## Example
 
-* Rust STM32 UART Programming
+* [Rust STM32 UART Programming](examples/01/doc.md)
 
 ## Additional Information
 * [Rust Tools](presentation/rust_tools.md)
