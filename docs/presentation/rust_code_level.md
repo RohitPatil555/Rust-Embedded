@@ -3,8 +3,6 @@ theme: uncover
 paginate: true
 transition: slide 1.2s
 text-align: left
-class:
-    - invert
 style: |
     .columns {
         display: grid;
@@ -13,7 +11,7 @@ style: |
     }
     .warning {
         padding: 10px;
-        background-color: gray;
+        background-color: lightgray;
         text-align: left;
         font-size: 50%;
     }

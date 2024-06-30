@@ -3,8 +3,6 @@ theme: uncover
 paginate: true
 transition: slide 1.2s
 text-align: left
-class:
-    - invert
 style: |
   .columns {
     display: grid;
