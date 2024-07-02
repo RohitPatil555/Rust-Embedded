@@ -115,10 +115,10 @@ fn main() {
 ### Trait
 
 - This act like abstract class as in c++ but not same. 
-    - no _vpointer_ concept in Rust.
     - It can be derived from base trait.
     - trait not take memory space.
     - For dynamic dispatch, it need allocation of object/instance.
+        - low overhead _vpointer_ concept in Rust.
 
 ```rust
 trait Name {
@@ -187,18 +187,47 @@ fn main() {
 
 ### Trait from standard library
 
-- Rust library use to control object behavior (e.g. copy constructor, destructor and debug)
+- Rust library use to control object behavior (e.g. copy constructor and debug)
 
 ```rust
 #![derive(Debug,Copy)] // here Debug Copy macro expand same like drop shown below.
 struct Test {};
+```
 
-impl Drop for Test {
-    fn drop(&mut self) {
-        // cleanup logic
+###### Example
+
+<div class=columns>
+<div>
+
+```rust
+#[derive(Debug)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+```
+</div>
+<div>
+
+```rust
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl fmt::Debug for Point {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Point")
+         .field("x", &self.x)
+         .field("y", &self.y)
+         .finish()
     }
 }
 ```
+
+</div>
+</div>
+
 ---
 
 ### Trait Generic
@@ -212,10 +241,10 @@ trait Flame {
 }
 
 // Generic function.
-fn flame_color<T> (animal : T) 
+fn flame_color<T> (vehicle : T) 
     where T: Flame
 {
-    println!("Color of Flame : {}", animal.get_color());
+    println!("Color of Flame : {}", vehicle.get_color());
 }
 
 struct GasolineCar{}

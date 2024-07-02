@@ -249,10 +249,13 @@ x = <span class="hljs-number">4</span>; <span class="hljs-comment">// allowed</s
 <ul>
 <li>This act like abstract class as in c++ but not same.
 <ul>
-<li>no <em>vpointer</em> concept in Rust.</li>
 <li>It can be derived from base trait.</li>
 <li>trait not take memory space.</li>
-<li>For dynamic dispatch, it need allocation of object/instance.</li>
+<li>For dynamic dispatch, it need allocation of object/instance.
+<ul>
+<li>low overhead <em>vpointer</em> concept in Rust.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -355,17 +358,38 @@ x = <span class="hljs-number">4</span>; <span class="hljs-comment">// allowed</s
 ;" data-marpit-pagination-total="15" data-transition-back="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;slide&quot;,&quot;duration&quot;:&quot;1.2s&quot;,&quot;builtinFallback&quot;:true}">
 <h3 id="trait-from-standard-library">Trait from standard library</h3>
 <ul>
-<li>Rust library use to control object behavior (e.g. copy constructor, destructor and debug)</li>
+<li>Rust library use to control object behavior (e.g. copy constructor and debug)</li>
 </ul>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-meta">#![derive(Debug,Copy)]</span> <span class="hljs-comment">// here Debug Copy macro expand same like drop shown below.</span>
 <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Test</span> {};
+</code></pre>
+<h6 id="example">Example</h6>
+<div class=columns>
+<div>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-meta">#[derive(Debug)]</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">Point</span> {
+    x: <span class="hljs-type">i32</span>,
+    y: <span class="hljs-type">i32</span>,
+}
+</code></pre>
+</div>
+<div>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Point</span> {
+    x: <span class="hljs-type">i32</span>,
+    y: <span class="hljs-type">i32</span>,
+}
 
-<span class="hljs-keyword">impl</span> <span class="hljs-title class_">Drop</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Test</span> {
-    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">drop</span>(&amp;<span class="hljs-keyword">mut</span> <span class="hljs-keyword">self</span>) {
-        <span class="hljs-comment">// cleanup logic</span>
+<span class="hljs-keyword">impl</span> <span class="hljs-title class_">fmt</span>::<span class="hljs-built_in">Debug</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">Point</span> {
+    <span class="hljs-keyword">fn</span> <span class="hljs-title function_">fmt</span>(&amp;<span class="hljs-keyword">self</span>, f: &amp;<span class="hljs-keyword">mut</span> fmt::Formatter&lt;<span class="hljs-symbol">&#x27;_</span>&gt;) <span class="hljs-punctuation">-&gt;</span> fmt::<span class="hljs-type">Result</span> {
+        f.<span class="hljs-title function_ invoke__">debug_struct</span>(<span class="hljs-string">&quot;Point&quot;</span>)
+         .<span class="hljs-title function_ invoke__">field</span>(<span class="hljs-string">&quot;x&quot;</span>, &amp;<span class="hljs-keyword">self</span>.x)
+         .<span class="hljs-title function_ invoke__">field</span>(<span class="hljs-string">&quot;y&quot;</span>, &amp;<span class="hljs-keyword">self</span>.y)
+         .<span class="hljs-title function_ invoke__">finish</span>()
     }
 }
 </code></pre>
+</div>
+</div>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-theme="uncover" data-style=".columns {
     display: grid;
@@ -398,10 +422,10 @@ x = <span class="hljs-number">4</span>; <span class="hljs-comment">// allowed</s
 }
 
 <span class="hljs-comment">// Generic function.</span>
-<span class="hljs-keyword">fn</span> <span class="hljs-title function_">flame_color</span>&lt;T&gt; (animal : T) 
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">flame_color</span>&lt;T&gt; (vehicle : T) 
     <span class="hljs-keyword">where</span> T: Flame
 {
-    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Color of Flame : {}&quot;</span>, animal.<span class="hljs-title function_ invoke__">get_color</span>());
+    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Color of Flame : {}&quot;</span>, vehicle.<span class="hljs-title function_ invoke__">get_color</span>());
 }
 
 <span class="hljs-keyword">struct</span> <span class="hljs-title class_">GasolineCar</span>{}

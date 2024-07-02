@@ -16,8 +16,11 @@ Refer to this guide to understand Rust for embedded systems. If you find it help
 
 ## Additional Information
 * [Rust Tools](presentation/rust_tools.md)
+* [Public Creates](https://crates.io)
 
 ## Reference 
 
 * [Rust Open Source Book](https://doc.rust-lang.org/book/){:target="_blank"}
 * [Rust Playground](https://play.rust-lang.org/){:target="_blank"}
+* [Programming Rust, 2nd Edition - OREILLY](https://www.oreilly.com/library/view/programming-rust-2nd/9781492052586/)
+
