@@ -49,11 +49,21 @@ Here they suggested two possible solution to mitigate memory safety issue
 - Software : Memory safe language.
 
 ---
+<style scoped>section{font-size:28px;}</style>
 
-### Why Rust ? Ans
+## TIOBE Index
 
-- Rust make sure memory safety get achieve at compile time. 
-- It is software based solution as per CISA article.
+- https://www.tiobe.com/tiobe-index/
+- They track languages base on following criteria at high level.
+    - Popularity of programming language
+    - Number of skilled engineers world-wide
+    - Courses and third party vendors
+- Source of Information
+    - Popular web sites Google, Amazon, Wikipedia, Bing and more than 20 others
+    - https://www.tiobe.com/tiobe-index/programminglanguages_definition
+- Rust Language
+    - Current rank is at 17.
+    - Last year same month rank was at 20.
 
 ---
 
@@ -280,9 +290,12 @@ For more information about this error, try `rustc --explain E0382`.
     - symbol name for function in rust is <module name>::<function name>
 
 ---
-<style scoped>section{font-size:20px;}</style>
+<style scoped>section{font-size:28px;}</style>
 
-# Hello World Example
+## Hello World Example
+
+<div class="columns">
+<div>
 
 - Execute below command to create project
 ```bash
@@ -295,6 +308,9 @@ fn main() {
     println!("Hello, world!");
 }
 ```
+</div>
+<div>
+
 - Build Code
 ```bash
 cargo build
@@ -303,11 +319,16 @@ cargo build
 ```bash
 cargo run
 ```
+</div>
+</div>
 
 ---
-<style scoped>section{font-size:15px;}</style>
+<style scoped>section{font-size:28px;}</style>
 
-# Unit Test environment
+## Unit Test environment
+
+<div class="columns">
+<div>
 
 - Add new api in src/main.rs
 ```rust
@@ -331,6 +352,9 @@ mod tests {
 }
 ```
 
+</div>
+<div>
+
 - Run test
 ```bash
 cargo test
@@ -340,6 +364,8 @@ test tests::test_add_1 ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
+</div>
+</div>
 
 ---
 
