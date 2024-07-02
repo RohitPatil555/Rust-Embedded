@@ -67,7 +67,7 @@ Here they suggested two possible solution to mitigate memory safety issue
 
 ---
 
-## How Rust Solve this problem ?
+## How Rust solve memory related issues ?
 
 Let see some example in C/C++ to understand more about Rust.
 
@@ -287,7 +287,7 @@ For more information about this error, try `rustc --explain E0382`.
 - Install Rust : [Link](https://www.rust-lang.org/tools/install) 
 - Use vscode with [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) or neovim 
 - Use gdb or lldb to debug code.
-    - symbol name for function in rust is <module name>::<function name>
+    - symbol name for function in rust is file_name::func_name
 
 ---
 <style scoped>section{font-size:28px;}</style>
