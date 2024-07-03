@@ -286,8 +286,7 @@ For more information about this error, try `rustc --explain E0382`.
 - [Rust Playground](https://play.rust-lang.org/) : To try out
 - Install Rust : [Link](https://www.rust-lang.org/tools/install) 
 - Use vscode with [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) or neovim 
-- Use gdb or lldb to debug code.
-    - symbol name for function in rust is file_name::func_name
+- Use rust-gdb to debug code
 
 ---
 <style scoped>section{font-size:28px;}</style>
