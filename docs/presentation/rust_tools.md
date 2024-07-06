@@ -20,6 +20,12 @@ warning: this expression creates a reference which is immediately dereferenced b
 
 For more about this tool refer its [document here](https://doc.rust-lang.org/clippy/index.html)
 
+### geiger
+
+[cargo-geiger](https://crates.io/crates/cargo-geiger).
+
+This tool provide statistic about unsafe code. This can help to monitor unsafe code addition in project.
+
 ## Security Audit Tool
 
 Rust support audit tool call [cargo-audit](https://crates.io/crates/cargo-audit).
@@ -27,8 +33,6 @@ This use public repository on github that track down vulnerability.
 This is highly depend on open source reporting.
 
 ## Testing Tools
-
-#### Enable Sanitization
 
 #### Unit Test
 
@@ -43,8 +47,23 @@ This is as we seen in Introduction presentation.
     }
 ```
 
+#### Mocking Test
+
+[mockall](https://crates.io/crates/mockall)
+
+This utility can be use to perform mocking to test various scenarios.
+
+#### Test Report
+
+
 #### Benchmark Test
+
+For benchmark, best tool is [Criterion](https://docs.rs/criterion/latest/criterion/). 
+
+> TODO: Need to explore more.
 
 #### Fuzz Test
 
-#### Test Report
+[cargo-fuzz](https://rust-fuzz.github.io/book/introduction.html)
+
+This plugin use to perform fuzzing base testing.
