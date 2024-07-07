@@ -75,6 +75,14 @@ This utility can be use to perform mocking to test various scenarios.
 
 #### Test Report
 
+This is required to track down status of test case in CI environment.
+Default test module of rust generate json format output but it not use by most of CI tools.
+
+To get junit formatted test report, I prefer to use below plugin.
+
+[cargo-nextest](https://crates.io/crates/cargo-nextest)
+
+For Junit configuration, [please refer here](https://nexte.st/docs/machine-readable/junit/)
 
 #### Benchmark Test
 
