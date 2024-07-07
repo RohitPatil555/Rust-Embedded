@@ -26,6 +26,26 @@ For more about this tool refer its [document here](https://doc.rust-lang.org/cli
 
 This tool provide statistic about unsafe code. This can help to monitor unsafe code addition in project.
 
+### Code Coverage
+
+We will be using [grcov](https://github.com/mozilla/grcov?tab=readme-ov-file#example-how-to-generate-source-based-coverage-for-a-rust-project)
+
+Execute below command
+
+```rust
+rustup component add llvm-tools-preview
+export RUSTFLAGS="-Cinstrument-coverage"
+cargo build
+export LLVM_PROFILE_FILE="profile-%p-%m.profraw"
+cargo test
+```
+
+Use below command to get coverage report.
+
+```rust
+grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing -o ./target/debug/coverage/
+```
+
 ## Security Audit Tool
 
 Rust support audit tool call [cargo-audit](https://crates.io/crates/cargo-audit).
