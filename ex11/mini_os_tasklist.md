@@ -5,7 +5,6 @@
 
 Below is high level task list to build mini-os project.
 
-```[tasklist]
 - [ ] Create and develop workspace for project
 - [ ] Add various CI tools to handle error in code.
     - [ ] Integrate Clippy, geiger, cargo-next, mockall tools
@@ -19,4 +18,3 @@ Below is high level task list to build mini-os project.
     - [ ] push log to UART
 - [ ] Build Task and Executor logic for Async programming.
 - [ ] Build Mini-Os entry function and add sample example code.
-```
