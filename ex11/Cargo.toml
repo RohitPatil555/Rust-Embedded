@@ -1,0 +1,11 @@
+
+
+[workspace]
+members = [
+    "bucket_allocator",
+]
+
+[workspace.package]
+version = "0.0.1"
+authors = ["Rohit Patil"]
+description = "Mini OS example"

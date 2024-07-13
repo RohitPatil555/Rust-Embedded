@@ -5,10 +5,10 @@
 
 Below is high level task list to build mini-os project.
 
-- [ ] Create and develop workspace for project
-- [ ] Add various CI tools to handle error in code.
-    - [ ] Integrate Clippy, geiger, cargo-next, mockall tools
-    - [ ] Integrate make target to run CI.
+- [x] Create and develop workspace for project
+- [x] Add various CI tools to handle error in code.
+    - [x] Integrate Clippy, geiger, cargo-next, mockall tools
+    - [x] Integrate make target to run CI.
     - [ ] Integrate spellcheck tool.
 - [ ] Build allocator logic as like Bucket allocator.
     - [ ] Develop initialization logic and verify same.

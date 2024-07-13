@@ -1,0 +1,17 @@
+
+Metric output format: x/y=z%
+    x = safe code found in the crate
+    y = total code found in the crate
+    z = percentage of safe ratio as defined by x/y
+
+Symbols: 
+    :) = No `unsafe` usage found, declares #![forbid(unsafe_code)]
+    ?  = No `unsafe` usage found, missing #![forbid(unsafe_code)]
+    !  = `unsafe` usage found
+
+Functions  Expressions  Impls  Traits  Methods  Dependency
+
+    1/1=100.00%     1/2=50.00%         0/0=100.00%        0/0=100.00%     0/0=100.00%  !  bucket_allocator 0.1.0
+
+    1/1=100.00%     1/2=50.00%         0/0=100.00%        0/0=100.00%     0/0=100.00%
+
