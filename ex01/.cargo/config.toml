@@ -2,6 +2,6 @@
 target = "thumbv7em-none-eabihf"
 
 [target.thumbv7em-none-eabihf]
-rustflags = [ "-C", "link-args=-Tlink.x"]
+rustflags = [ "-C", "link-args=-Tlink.x -n"]
 runner = "qemu-system-arm -cpu cortex-m3 --machine stm32vldiscovery -nographic --kernel "
 
