@@ -12,3 +12,4 @@ In this we will look at basic technique that can get use by rust while developin
 * Example 8 - Basic example of procedure macro.
 * Example 9 - Develop DSL using procedure macro.
 * Example 10 - Build derive macro to pack information in json format.
+* Example 11 - This have dependency to above example 4,5 and 1. In this example we will be writing basic co-operative scheduling mini-os using async-await rust feature.
