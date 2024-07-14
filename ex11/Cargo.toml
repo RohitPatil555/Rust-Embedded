@@ -2,7 +2,7 @@
 
 [workspace]
 members = [
-    "bucket_allocator",
+    "pool_allocator",
 ]
 
 [workspace.package]
