@@ -12,6 +12,7 @@ Below is high level task list to build mini-os project.
     - [ ] Integrate spellcheck tool.
 - [ ] Build allocator logic as like Bucket allocator.
     - [x] Develop initialization logic and verify same.
+    - [ ] Add validation logic to verify sufficient memory to create block.
     - [ ] Add check to confirm on free address within pool.
     - [ ] Develop and design multiple pool management.
 - [ ] Build logging framework for mini-os

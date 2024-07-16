@@ -20,7 +20,7 @@ impl<const SIZE: usize> Block<SIZE> {
     }
 
     pub(crate) fn remove_next(&mut self) {
-        if self.next.is_none() {
+        if self.next.is_some() {
             self.next = None;
         }
     }

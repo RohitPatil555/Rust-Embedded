@@ -8,15 +8,17 @@ pub struct Pool<const SIZE: usize, const COUNT: usize> {
 }
 
 impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
-    pub unsafe fn new(start: *mut u8, mem_size: usize) -> Option<Self> {
-        let mut boff: usize = 0;
-        let block_size: usize = size_of::<Block<SIZE>>();
-        let mut pool = Pool::<SIZE, COUNT> {
+    pub const fn init() -> Self {
+        Pool::<SIZE, COUNT> {
             free: None,
             base: None,
             cur_count: 0,
             block_size: 0,
-        };
+        }
+    }
+    pub unsafe fn create(&mut self, start: *mut u8, mem_size: usize) {
+        let mut boff: usize = 0;
+        let block_size: usize = size_of::<Block<SIZE>>();
         let mut prev_block: &mut Block<SIZE>;
         let mut temp_block: &mut Block<SIZE>;
         let mut next: *mut u8;
@@ -31,7 +33,7 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
         for idx in 1..COUNT {
             boff = idx * block_size;
             if (boff + block_size) > mem_size {
-                return None;
+                panic!("Error : Unsufficent memory");
             }
 
             unsafe {
@@ -42,12 +44,22 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
             prev_block = temp_block;
         }
 
-        pool.base = Some(block_start);
-        pool.free = Some(block_start);
-        pool.cur_count = 0;
-        pool.block_size = block_size;
+        self.base = Some(block_start);
+        self.free = Some(block_start);
+        self.cur_count = 0;
+        self.block_size = block_size;
+    }
 
-        Some(pool)
+    fn is_addr_in_range(&mut self, addr: *mut u8) -> bool {
+        let base_ptr = self.base.unwrap() as *mut u8;
+        let offset = unsafe { addr.offset_from(base_ptr).try_into().unwrap() };
+        let total_size = self.block_size * COUNT;
+
+        if total_size > offset {
+            return true;
+        }
+
+        false
     }
 
     pub fn alloc(&mut self) -> Option<*mut u8> {
@@ -67,6 +79,8 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
             return;
         }
 
+        assert!(self.is_addr_in_range(val_ptr), "Error: Not valid pointer");
+
         if self.free.is_none() {
             self.free = Some(block_to_free);
         } else {
@@ -78,13 +92,16 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
         self.cur_count -= 1;
     }
 
-    #[cfg(feature = "test-utils")]
-    pub fn get_count(&self) -> usize {
-        self.cur_count
+    pub fn get_block_size(&self) -> usize {
+        self.block_size
+    }
+
+    pub fn get_pool_size(&self) -> usize {
+        self.block_size * COUNT
     }
 
     #[cfg(feature = "test-utils")]
-    pub fn get_block_size(&self) -> usize {
-        self.block_size
+    pub fn get_count(&self) -> usize {
+        self.cur_count
     }
 }
