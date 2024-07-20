@@ -1,0 +1,16 @@
+[package]
+name = "minios"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+description.workspace = true
+
+[dependencies]
+logger = { path = "../logger" }
+
+[profile.dev]
+panic="abort"
+
+[profile.release]
+panic="abort"
+strip = true

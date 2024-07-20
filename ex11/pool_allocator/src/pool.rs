@@ -1,4 +1,5 @@
 use crate::block::Block;
+use core::mem::size_of;
 
 pub struct Pool<const SIZE: usize, const COUNT: usize> {
     free: Option<*mut Block<SIZE>>,
@@ -20,7 +21,11 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
         pool
     }
 
+    /// # Safety
+    ///
+    /// This API create bucket on raw memory.
     pub unsafe fn create(&mut self, start: *mut u8, mem_size: usize) -> Result<(), &str> {
+        // SAFETY:  This API modify raw pointer and consume ti to create pool.
         let mut boff: usize = 0;
         let mut prev_block: &mut Block<SIZE>;
         let mut temp_block: &mut Block<SIZE>;

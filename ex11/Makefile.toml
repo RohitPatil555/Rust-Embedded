@@ -18,15 +18,16 @@ args = ["clippy"]
 command = "cargo"
 args = [ "build" ]
 
-[tasks.test]
-command = "cargo"
-args = [ "nextest", "run", "--features", "test-utils" ]
+[tasks.run]
+script = [
+    "cargo nextest run -p logger --features test-utils",
+    "cargo nextest run -p pool_allocator --features test-utils"
+]
 
 [tasks.ci-flow]
 dependencies = [
     "clean",
     "format",
     "clippy",
-    "build",
     "test"
 ]

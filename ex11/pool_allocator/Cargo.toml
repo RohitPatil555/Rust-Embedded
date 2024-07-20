@@ -1,11 +1,11 @@
 [package]
 name = "pool_allocator"
-version = "0.1.0"
 edition = "2021"
+version.workspace = true
+authors.workspace = true
+description.workspace = true
 
 [dev.dependencies]
-mockall = "0.12.1"
 
 [features]
 test-utils = []
-all = ["test-utils"]

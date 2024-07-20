@@ -1,7 +1,7 @@
 
 
 [workspace]
-members = [ "logger",
+members = [ "logger", "minios",
     "pool_allocator",
 ]
 
@@ -9,3 +9,10 @@ members = [ "logger",
 version = "0.0.1"
 authors = ["Rohit Patil"]
 description = "Mini OS example"
+
+[profile.dev]
+panic="abort"
+
+[profile.release]
+panic="abort"
+strip = true

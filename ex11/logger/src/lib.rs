@@ -1,11 +1,13 @@
-pub trait MyLoogger {
-    fn init_logger(&self) -> bool;
-    fn write_byte(&self, ch: char) -> bool;
+#![no_std]
+
+pub trait MyLogger {
+    fn init_logger(&mut self) -> bool;
+    fn write_byte(&mut self, ch: char) -> bool;
 }
 
-pub fn log<T>(hdlr: T, s: &str)
+pub fn log<T>(hdlr: &mut T, s: &str)
 where
-    T: MyLoogger,
+    T: MyLogger,
 {
     for ch in s.chars() {
         if !hdlr.write_byte(ch) {
@@ -18,26 +20,41 @@ where
 
 #[cfg(test)]
 mod tests {
+    extern crate std;
+
     use super::*;
+    use std::string::String;
 
-    struct UartLog {}
+    #[test]
+    fn test_log() {
+        let mut hdlr = UartLog {
+            st: String::default(),
+        };
+        let _ = hdlr.init_logger();
 
-    impl MyLoogger for UartLog {
-        fn init_logger(&self) -> bool {
+        let _ = log::<UartLog>(&mut hdlr, "Hello World !");
+        assert_eq!(hdlr.get_output(), "Hello World !\n");
+    }
+
+    struct UartLog {
+        st: String,
+    }
+
+    impl MyLogger for UartLog {
+        fn init_logger(&mut self) -> bool {
             return true;
         }
 
-        fn write_byte(&self, ch: char) -> bool {
-            print!("{}", ch);
+        fn write_byte(&mut self, ch: char) -> bool {
+            //print!("{}", ch);
+            self.st.push(ch);
             return true;
         }
     }
 
-    #[test]
-    fn test_log() {
-        let hdlr = UartLog {};
-        let _ = hdlr.init_logger();
-
-        let _ = log::<UartLog>(hdlr, "Hello World !");
+    impl UartLog {
+        fn get_output(&self) -> String {
+            self.st.clone()
+        }
     }
 }
