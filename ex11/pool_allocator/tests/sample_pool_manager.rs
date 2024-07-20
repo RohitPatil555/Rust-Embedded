@@ -15,7 +15,7 @@ fn create_pooling() {
             "Memory address : {:p} and free memory : {}",
             mem_addr, free_memory
         );
-        POOL_1.create(mem_addr, free_memory);
+        let _ = POOL_1.create(mem_addr, free_memory);
         free_memory -= POOL_1.get_pool_size();
 
         mem_addr = mem_addr.wrapping_add(POOL_1.get_pool_size());
@@ -23,6 +23,6 @@ fn create_pooling() {
             "Memory address : {:p} and free memory : {}",
             mem_addr, free_memory
         );
-        POOL_2.create(mem_addr, free_memory);
+        let _ = POOL_2.create(mem_addr, free_memory);
     }
 }

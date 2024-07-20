@@ -5,7 +5,7 @@ static mut MEM_BUF: [u8; 1028] = [0; 1028];
 #[test]
 fn test_initialize() {
     let mut pool = Pool::<100, 2>::init();
-    unsafe { pool.create(MEM_BUF.as_mut_ptr(), 1028) };
+    let _ = unsafe { pool.create(MEM_BUF.as_mut_ptr(), 1028) };
     assert_eq!(pool.get_count(), 0);
 }
 
@@ -15,7 +15,7 @@ fn test_print_blocks() {
     let ptr_prev: *mut u8;
     let ptr_next: *mut u8;
 
-    unsafe { pool.create(MEM_BUF.as_mut_ptr(), 1028) };
+    let _ = unsafe { pool.create(MEM_BUF.as_mut_ptr(), 1028) };
     assert_eq!(pool.get_count(), 0);
 
     ptr_prev = pool.alloc().unwrap();
