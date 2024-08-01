@@ -23,9 +23,16 @@ SECTIONS
     *(.text .text.*);
   } > FLASH
 
+  .heap (NOLOAD):
+  {
+    heap_start = .;
+    _heap_size = 4K;
+    . = . + _heap_size;
+    heap_end = .;
+  } > RAM
+
   /DISCARD/ :
   {
     *(.ARM.exidx .ARM.exidx.*);
   }
 }
-

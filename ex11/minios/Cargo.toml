@@ -7,9 +7,11 @@ description.workspace = true
 
 [dependencies]
 logger = { path = "../logger" }
+pool_allocator = { path = "../pool_allocator" }
 
 [profile.dev]
 panic="abort"
+debug = true
 
 [profile.release]
 panic="abort"

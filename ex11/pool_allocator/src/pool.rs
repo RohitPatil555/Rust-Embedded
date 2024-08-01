@@ -65,10 +65,10 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
 
     fn is_addr_in_range(&mut self, addr: *mut u8) -> bool {
         let base_ptr = self.base.unwrap() as *mut u8;
-        let offset = unsafe { addr.offset_from(base_ptr).try_into().unwrap() };
         let total_size = self.block_size * COUNT;
+        let end_addr = base_ptr.wrapping_add(total_size);
 
-        if total_size > offset {
+        if addr > base_ptr && addr < end_addr {
             return true;
         }
 
@@ -92,7 +92,10 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
             return;
         }
 
-        assert!(self.is_addr_in_range(val_ptr), "Error: Not valid pointer");
+        assert!(
+            self.is_addr_in_range(val_ptr),
+            "Error: Not valid pointer for Free"
+        );
 
         if self.free.is_none() {
             self.free = Some(block_to_free);
@@ -106,7 +109,7 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
     }
 
     pub fn get_block_size(&self) -> usize {
-        self.block_size
+        SIZE
     }
 
     pub fn get_pool_size(&self) -> usize {
@@ -116,5 +119,9 @@ impl<const SIZE: usize, const COUNT: usize> Pool<SIZE, COUNT> {
     #[cfg(feature = "test-utils")]
     pub fn get_count(&self) -> usize {
         self.cur_count
+    }
+
+    pub fn get_block_size_with_header(&self) -> usize {
+        self.block_size
     }
 }

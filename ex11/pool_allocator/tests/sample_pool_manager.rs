@@ -24,5 +24,13 @@ fn create_pooling() {
             mem_addr, free_memory
         );
         let _ = POOL_2.create(mem_addr, free_memory);
+
+        let ptr1 = POOL_1.alloc().unwrap();
+        let ptr2 = POOL_2.alloc().unwrap();
+        let ptr3 = POOL_2.alloc().unwrap();
+
+        POOL_2.free(ptr2);
+        POOL_1.free(ptr1);
+        POOL_2.free(ptr1);
     }
 }
